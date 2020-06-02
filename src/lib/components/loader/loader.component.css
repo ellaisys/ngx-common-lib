@@ -1,0 +1,37 @@
+.loader {
+    z-index: 99999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    margin-left: -100px;
+    margin-top: -100px;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#cc000000,endColorstr=#cc000000);
+    background: rgba(0,0,0,0.3);
+      -webkit-border-radius: 20px;
+      -moz-border-radius: 20px;
+      border-radius: 20px;
+}
+
+.loader i {
+    color: #FFF;
+    text-align: center;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 100%;
+}
+
+.loader > .title {
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    font-size: 18px;
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+}
