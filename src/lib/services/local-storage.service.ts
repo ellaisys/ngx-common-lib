@@ -7,10 +7,8 @@ export class LocalStorageService {
     private _storage: Storage;
 
     //Default Constructor
-    constructor(
-        private _storageConfig: StorageConfiguration,
-    ) {
-        this._LOCAL_STORAGE_APP_PREFIX = this._storageConfig._STORAGE_KEY;
+    constructor() {
+        this._LOCAL_STORAGE_APP_PREFIX = StorageConfiguration.STORAGE_KEY;
         this._storage = localStorage;
     } //Function ends
 

@@ -2,10 +2,11 @@ import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,HttpHe
 import { Injectable } from '@angular/core';
 
 //Boilerplate files
-import { HttpConfiguration } from '../configurations/http.configuration';
+import { HttpConfiguration, IRequestParam } from '../configurations/http.configuration';
 import { SessionStorageService } from './session-storage.service';
 import { Observable } from 'rxjs';
 import { StorageConfiguration } from '../configurations/storage.configuration';
+import { count } from 'rxjs/operators';
 
 const _ENCODED_FORM_OPTION: Object = {
     headers: new HttpHeaders().append('Content-Type', 'application/x-www-form-urlencoded')
@@ -14,14 +15,15 @@ const _JSON_HEADER_OPTION: Object = {
     headers: new HttpHeaders().append('Content-Type', 'application/json')
 };
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class HttpService {
     private endpoint: string | null;
 
     constructor(
-        private _httpConfig: HttpConfiguration,
         private _http: HttpClient
-    ) { this.endpoint=this._httpConfig.server+this._httpConfig.apiUrl; }
+    ) { this.endpoint = HttpConfiguration.server + HttpConfiguration.apiUrl; }
 
 
     /**
@@ -57,9 +59,9 @@ export class HttpService {
      * @param onlyServerURL
      */
     public async post<T>(_uri: string, _body: any, _encoded:boolean=false, _onlyServerURL: boolean=false){
-        let url: string = ((_onlyServerURL)?this._httpConfig.server:this.endpoint)+_uri;
+        let url: string = ((_onlyServerURL)?HttpConfiguration.server:this.endpoint) + _uri;
         let options: Object = (_encoded)?_ENCODED_FORM_OPTION:_JSON_HEADER_OPTION;
-        return await this._http.post<T>(url, _body, options);
+        return await this._http.post<T>(url, _body, options).toPromise();
     } //Function ends
 
     
@@ -103,16 +105,14 @@ export class HttpService {
 export class RequestInterceptor implements HttpInterceptor {
     constructor(
         private _session: SessionStorageService,
-        private _httpConfig: HttpConfiguration,
-        private _storageConfig: StorageConfiguration
     ) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const _HEADER_TOKEN_KEY: string = this._httpConfig.header.token_key;
-        const _HEADER_TOKEN_BEARER: string = this._httpConfig.header.token_bearer;
+        const _HEADER_TOKEN_KEY: string = HttpConfiguration.headers.token_key;
+        const _HEADER_TOKEN_BEARER: string = HttpConfiguration.headers.token_bearer;
 
-        let claim: any = this._session.getItem(this._storageConfig._SESSION_AUTH_CLAIM_KEY);
-        //console.log("Result",claim);
+        let claim: any = this._session.getItem(StorageConfiguration.SESSION_AUTH_CLAIM_KEY);
+        console.log("Result",claim);
         if(claim!=null) {
             let _AUTH_TOKEN: string = claim.token;
 
@@ -131,6 +131,18 @@ export class RequestInterceptor implements HttpInterceptor {
                 req = req.clone({ headers: req.headers.set('Accept', 'application/json') });
             } //End if
         } //End if
+
+        //Set Params in the request
+        let params: IRequestParam[] = HttpConfiguration.request.params;
+        if (params && params instanceof Array && params.length>0) {
+
+            for (let index = 0; index < params.length; index++) {
+                let param: IRequestParam = params[index];
+
+                req = req.clone({ params: req.params.set(param.key, param.value) });
+            }
+        } //End if
+
         return next.handle(req);
     } //Function ends
 
