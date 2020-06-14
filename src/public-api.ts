@@ -15,3 +15,6 @@ export * from './lib/services/local-storage.service';
 export * from './lib/services/session-storage.service';
 export * from './lib/services/eventbroker.service';
 export * from './lib/services/notification.service';
+
+//Translate module
+export * from './lib/modules/translate/translate.module';

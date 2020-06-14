@@ -1,5 +1,5 @@
 import { NgModule, ModuleWithProviders, APP_INITIALIZER } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 
 //Library Configurations
 import { HttpConfiguration } from './configurations/http.configuration';
@@ -21,6 +21,11 @@ import { EventBrokerService } from './services/eventbroker.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { SessionStorageService } from './services/session-storage.service';
 
+//Library Modules
+import { TranslateModule, TranslateLoader } from './modules/translate/translate.module';
+import { TranslateHttpLoader } from './modules/translate/commons/http-loader';
+
+
 //Initialization Functions
 export function initLibrary(_httpConfig: HttpConfiguration, _storageConfig: StorageConfiguration) {
   
@@ -28,7 +33,12 @@ export function initLibrary(_httpConfig: HttpConfiguration, _storageConfig: Stor
     _httpConfig.init();
     _storageConfig.init();
   };
-}
+} //Function ends
+
+//HTTP Loader for I18N
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+} //Function ends
 
 
 @NgModule({
@@ -46,9 +56,22 @@ export function initLibrary(_httpConfig: HttpConfiguration, _storageConfig: Stor
   ],
   imports: [
     HttpClientModule,
+
+    //Boilerplate Modules
+    TranslateModule.forChild({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+      },
+      isolate: false
+    }),
   ],
   exports: [
-    EllaisysLibComponent
+    EllaisysLibComponent,
+
+    //Boilerplate Modules
+    TranslateModule
   ],
   providers: [
     {
@@ -64,8 +87,8 @@ export function initLibrary(_httpConfig: HttpConfiguration, _storageConfig: Stor
     HttpService
   ]
 })
-export class EllaisysLibModule { 
-  
+export class EllaisysLibModule {
+
   static forRoot(_environment: any): ModuleWithProviders<EllaisysLibModule> {
 
     //Get Application Environemnt data
