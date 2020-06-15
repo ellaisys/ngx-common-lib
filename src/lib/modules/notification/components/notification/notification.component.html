@@ -1,0 +1,72 @@
+<div class="simple-notification"
+     [@enterLeave]="item.state"
+     (click)="onClick($event)"
+     [class]="theClass"
+     [ngClass]="{
+            'alert': item.type === 'alert',
+            'error': item.type === 'error',
+            'warn': item.type === 'warn',
+            'success': item.type === 'success',
+            'info': item.type === 'info',
+            'bare': item.type === 'bare',
+            'rtl-mode': rtl
+        }"
+     (mouseenter)="onEnter()"
+     (mouseleave)="onLeave()" [hidden]="true">
+
+    <div *ngIf="!item.html">
+
+        <div class="sn-title" *ngIf="titleIsTemplate else regularTitle">
+            <ng-container *ngTemplateOutlet="title"></ng-container>
+        </div>
+
+        <ng-template #regularTitle>
+            <div class="sn-title" [innerHTML]="title"></div>
+        </ng-template>
+
+        <div class="sn-content" *ngIf="contentIsTemplate else regularContent">
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </div>
+
+        <ng-template #regularContent>
+            <div class="sn-content" [innerHTML]="content"></div>
+        </ng-template>
+
+        <div class="icon" *ngIf="item.icon !== 'bare'" [innerHTML]="safeSvg"></div>
+    </div>
+
+    <div *ngIf="item.html">
+        <div class="sn-html" *ngIf="htmlIsTemplate else regularHtml">
+            <ng-container *ngTemplateOutlet="item.html"></ng-container>
+        </div>
+
+        <ng-template #regularHtml>
+            <div class="sn-content" [innerHTML]="item.html"></div>
+        </ng-template>
+
+        <div class="icon" [class.icon-hover]="clickIconToClose" *ngIf="item.icon" [innerHTML]="safeSvg" (click)="onClickIcon($event)"></div>
+    </div>
+
+    <div class="sn-progress-loader" *ngIf="showProgressBar">
+        <span [ngStyle]="{'width': progressWidth + '%'}"></span>
+    </div>
+</div>
+
+<div class="alert notification-alert" role="alert"
+    [ngClass]="{
+        'cus-alert-default': item.type === 'alert',
+        'cus-alert-failure': item.type === 'error',
+        'cus-alert-warning': item.type === 'warn',
+        'cus-alert-success': item.type === 'success',
+        'cus-alert-normal': item.type === 'info',
+        'bare': item.type === 'bare',
+        'rtl-mode': rtl
+    }"
+    (click)="onClick($event)"
+    (mouseenter)="onEnter()"
+    (mouseleave)="onLeave()"
+    *ngIf="!item.html">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="assets/images/notifications/alert-close.png" /></button>
+    <p class="cal-heading"><span class="icon" *ngIf="item.icon !== 'bare'" [innerHTML]="safeSvg"></span>{{item.title}}</p>
+    <p class="cal-name">{{item.content}}</p>
+</div>

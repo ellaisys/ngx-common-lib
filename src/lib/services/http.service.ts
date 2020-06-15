@@ -32,11 +32,11 @@ export class HttpService {
      * @param uri 
      * @param params 
      */
-    public async getWithParams<T>(_uri: string, _params: string){
-        const options = _params ?{ params: new HttpParams().set('query', _params) } : {};
-        let url = this.endpoint+_uri;
-        return await this._http.get<T>(url, options);
-    } //Function ends
+    // public async getWithParams<T>(_uri: string, _params: string){
+    //     const options = _params ?{ params: new HttpParams().set('query', _params) } : {};
+    //     let url = this.endpoint+_uri;
+    //     return await this._http.get<T>(url, options);
+    // } //Function ends
 
 
     /**
@@ -45,8 +45,9 @@ export class HttpService {
      * @param uri
      */
     public async get<T>(_uri: string) {
-        let url = this.endpoint+_uri;    
-        return await this._http.get<T>(url);
+        let url = this.endpoint+_uri;
+
+        return await this._http.get<T>(url).toPromise();
     } //Function ends
 
 
@@ -61,6 +62,7 @@ export class HttpService {
     public async post<T>(_uri: string, _body: any, _encoded:boolean=false, _onlyServerURL: boolean=false){
         let url: string = ((_onlyServerURL)?HttpConfiguration.server:this.endpoint) + _uri;
         let options: Object = (_encoded)?_ENCODED_FORM_OPTION:_JSON_HEADER_OPTION;
+
         return await this._http.post<T>(url, _body, options).toPromise();
     } //Function ends
 
@@ -73,7 +75,7 @@ export class HttpService {
      */
     public async put<T>(_uri: string, _body: any) {
         let url = this.endpoint+_uri;    
-        return await this._http.put<T>(url, _body, _JSON_HEADER_OPTION);
+        return await this._http.put<T>(url, _body, _JSON_HEADER_OPTION).toPromise();
     } //Function ends
  
 
@@ -84,7 +86,7 @@ export class HttpService {
      */
     public async delete<T>(_uri: string){
         let url = this.endpoint+_uri;      
-        return await this._http.delete<T>(url);
+        return await this._http.delete<T>(url).toPromise();
     } //Function ends
 
     
@@ -101,6 +103,7 @@ export class HttpService {
 
 } //Class ends
 
+
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor {
     constructor(
@@ -113,21 +116,24 @@ export class RequestInterceptor implements HttpInterceptor {
 
         let claim: any = this._session.getItem(StorageConfiguration.SESSION_AUTH_CLAIM_KEY);
         console.log("Result",claim);
-        if(claim!=null) {
+
+        if (claim!=null) {
             let _AUTH_TOKEN: string = claim.token;
 
             let boolNeedsAuthentication: boolean = !(req.url.search('googleapis.com')>0);
-            if(boolNeedsAuthentication){
-                if(!req.headers.has('Content-Type')) {
+            if (boolNeedsAuthentication) {
+                if (!req.headers.has('Content-Type')) {
                     req = req.clone({ 
                         headers: req.headers.set('Content-Type', 'application/json') 
                     });
                 } //End if
-                if(_AUTH_TOKEN) {
+
+                if (_AUTH_TOKEN) {
                     req = req.clone({ 
                         headers: req.headers.set(_HEADER_TOKEN_KEY, _HEADER_TOKEN_BEARER+_AUTH_TOKEN) 
                     });
                 } //End if
+
                 req = req.clone({ headers: req.headers.set('Accept', 'application/json') });
             } //End if
         } //End if

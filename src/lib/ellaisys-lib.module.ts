@@ -25,7 +25,6 @@ import { SessionStorageService } from './services/session-storage.service';
 import { TranslateModule, TranslateLoader } from './modules/translate/translate.module';
 import { TranslateHttpLoader } from './modules/translate/commons/http-loader';
 
-
 //Initialization Functions
 export function initLibrary(_httpConfig: HttpConfiguration, _storageConfig: StorageConfiguration) {
   
@@ -66,12 +65,13 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
       isolate: false
     }),
+
   ],
   exports: [
     EllaisysLibComponent,
 
     //Boilerplate Modules
-    TranslateModule
+    TranslateModule,
   ],
   providers: [
     {
