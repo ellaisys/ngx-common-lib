@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 //Boilerplate files
 import { HttpConfiguration, IRequestParam } from '../configurations/http.configuration';
 import { SessionStorageService } from './session-storage.service';
-import { Observable } from 'rxjs';
+import { Observable, empty } from 'rxjs';
 import { StorageConfiguration } from '../configurations/storage.configuration';
 import { count } from 'rxjs/operators';
 
@@ -40,14 +40,43 @@ export class HttpService {
 
 
     /**
+     * Convert the object into Http Params
+     * 
+     * @param _data 
+     */
+    private getParams(_data: Object): HttpParams {
+        let params: HttpParams=null;
+
+        if (_data) {
+            params = new HttpParams();
+            Object.keys(_data).forEach((key) => {
+                params.set(key, _data[key]);
+            });
+        } //End if
+
+        return params;
+    } //Function ends
+
+
+    /**
      * This method GET the data
      * 
      * @param uri
      */
-    public async get<T>(_uri: string) {
-        let url = this.endpoint+_uri;
+    public async get<T>(_uri: string, _params: Object=null) {
+        let options: any = null;
+        if (_params) {
+            if (_params instanceof HttpParams) {
+                options = { params: _params };
+            } else if (_params instanceof Object) {
+                options = { params: this.getParams(_params) };
+            } else {
+                //Do nothing
+            } //End if
+        } //End if
 
-        return await this._http.get<T>(url).toPromise();
+        let url = this.endpoint+_uri;
+        return await this._http.get<T>(url, options).toPromise();
     } //Function ends
 
 

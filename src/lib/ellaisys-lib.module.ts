@@ -10,11 +10,6 @@ import { EllaisysLibComponent } from './ellaisys-lib.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { ReadMoreComponent } from './components/readmore/readmore.component';
 
-//Library Pipes
-import { FilterPipe } from './pipes/string/filter.pipe';
-import { ShortenPipe } from './pipes/string/shorten.pipe';
-import { NiceDateFormatPipe } from './pipes/date/niceformat.date.pipe';
-
 //Library Services
 import { HttpService, RequestInterceptor } from './services/http.service';
 import { EventBrokerService } from './services/eventbroker.service';
@@ -24,6 +19,14 @@ import { SessionStorageService } from './services/session-storage.service';
 //Library Modules
 import { TranslateModule, TranslateLoader } from './modules/translate/translate.module';
 import { TranslateHttpLoader } from './modules/translate/commons/http-loader';
+import { PipeModule } from './modules/pipe/pipe.module';
+
+
+//Library Directives
+import { IntlPhoneDirective } from './directives/intl-phone/intl-phone.directive';
+import { LoggerModule } from './modules/logger/logger.module';
+import { ValidatorModule } from './modules/validator/validator.module';
+
 
 //Initialization Functions
 export function initLibrary(_httpConfig: HttpConfiguration, _storageConfig: StorageConfiguration) {
@@ -48,10 +51,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoaderComponent,
     ReadMoreComponent,
 
-    //Pipes
-    FilterPipe,
-    ShortenPipe,
-    NiceDateFormatPipe,
+    //Directives
+    IntlPhoneDirective,
   ],
   imports: [
     HttpClientModule,
@@ -65,13 +66,18 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
       isolate: false
     }),
-
+    PipeModule,
+    LoggerModule,
+    ValidatorModule,
   ],
   exports: [
     EllaisysLibComponent,
 
     //Boilerplate Modules
     TranslateModule,
+    PipeModule,
+    LoggerModule,
+    ValidatorModule,
   ],
   providers: [
     {
