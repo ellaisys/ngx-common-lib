@@ -100,9 +100,8 @@ export class EllaisysLibModule {
     //Get Application Environemnt data
     let environment: any = _environment?.env;
 
-    console.log('ellaisys-lib.environment.1', environment);
     if ((!environment.production) && environment.logs) {
-      console.log('ellaisys-lib.environment.2', environment);
+      console.log('ellaisys-lib.environment', environment);
     } //End if
     
     return {

@@ -10,6 +10,7 @@ export class StorageConfiguration {
     public static SESSION_AUTH_CLAIM_KEY: string;
     public static LOCAL_STORAGE_AUTH_CREDENTIALS: string;
 
+    
     //Default constructor
     constructor(
         @Inject('environment') private _environment: any
@@ -17,17 +18,28 @@ export class StorageConfiguration {
         this.storageConfig=this._environment.storage_config; 
     }
 
+
+    /**
+     * Initialization Routine
+     */
     public init(): void {
         //Initialize variables
         let storageConfig = this.storageConfig;
 
-        console.log(storageConfig);
+        //Dubug to console
+        if (this._environment && (this._environment.production==false)) {
+            console.debug('ellaisys-lib->StorageConfiguration->storageConfig:');
+            console.debug(storageConfig);
+        } //End if
 
-        if (storageConfig && storageConfig.storage) {
-            StorageConfiguration.STORAGE_KEY = storageConfig.storage.app_key;
-            StorageConfiguration.SESSION_AUTH_CLAIM_KEY = storageConfig.storage.auth_claim_key;
-            StorageConfiguration.LOCAL_STORAGE_AUTH_CREDENTIALS = storageConfig.storage.auth_credentials_key;
-        }
+        //Set the storage key values
+        if (storageConfig && storageConfig.storage_keys) {
+            let keys: any = storageConfig.storage_keys;
+
+            StorageConfiguration.STORAGE_KEY = keys.app_key;
+            StorageConfiguration.SESSION_AUTH_CLAIM_KEY = keys.auth_claim_key;
+            StorageConfiguration.LOCAL_STORAGE_AUTH_CREDENTIALS = keys.auth_credentials_key;
+        } //End if
     } //Function ends
 
 } //Class ends
