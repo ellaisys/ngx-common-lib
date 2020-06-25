@@ -12,6 +12,7 @@ import { USE_STORE } from "./services/translate.service";
 import { USE_DEFAULT_LANG } from "./services/translate.service";
 
 export * from "./commons/translate.loader";
+export * from "./commons/http-loader";
 export * from "./services/translate.service";
 export * from "./commons/missing-translation-handler";
 export * from "./commons/translate.parser";
