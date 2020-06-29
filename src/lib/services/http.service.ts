@@ -63,13 +63,15 @@ export class HttpService {
      * 
      * @param uri
      */
-    public async get<T>(_uri: string, _params: Object=null) {
-        let options: any = null;
+    public async get<T>(_uri: string, _params: Object=null, _encoded:boolean=false) {
+        let options: Object = (_encoded)?_ENCODED_FORM_OPTION:_JSON_HEADER_OPTION;
+
+        //Add params if exists
         if (_params) {
             if (_params instanceof HttpParams) {
-                options = { params: _params };
+                options['params'] = _params;
             } else if (_params instanceof Object) {
-                options = { params: this.getParams(_params) };
+                options['params'] = this.getParams(_params);
             } else {
                 //Do nothing
             } //End if
@@ -159,7 +161,7 @@ export class RequestInterceptor implements HttpInterceptor {
 
                 if (_AUTH_TOKEN) {
                     req = req.clone({ 
-                        headers: req.headers.set(_HEADER_TOKEN_KEY, _HEADER_TOKEN_BEARER+_AUTH_TOKEN) 
+                        headers: req.headers.set(_HEADER_TOKEN_KEY, _HEADER_TOKEN_BEARER.replace('{token}',_AUTH_TOKEN))
                     });
                 } //End if
 
