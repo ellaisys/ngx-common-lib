@@ -1,6 +1,9 @@
-# EllaisysLib
+# EllaiSys Angular Library for Rapid Development
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.9.
+
+## Requirements
+- Typescript 3.9
 
 ## Code scaffolding
 
