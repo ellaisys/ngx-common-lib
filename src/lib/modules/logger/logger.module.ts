@@ -25,7 +25,7 @@ export * from './types/logger-level.enum';
 })
 
 export class LoggerModule {
-  static forRoot(config: LoggerConfig | null | undefined): ModuleWithProviders {
+  static forRoot(config: LoggerConfig | null | undefined): ModuleWithProviders<LoggerModule> {
     return {
       ngModule: LoggerModule,
       providers: [
@@ -38,7 +38,7 @@ export class LoggerModule {
     };
   } //Static Method ends
 
-  static forChild(): ModuleWithProviders {
+  static forChild(): ModuleWithProviders<LoggerModule> {
     return {
       ngModule: LoggerModule,
       providers: [

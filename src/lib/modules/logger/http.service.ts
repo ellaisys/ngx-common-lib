@@ -15,7 +15,7 @@ export class LoggerHttpService {
     // They may log errors using this service causing circular calls
     const req = new HttpRequest<any>('POST', url, log, options || {});
     return this.httpBackend.handle(req).pipe(
-      filter(e => e instanceof HttpResponse),
+      filter((e: any) => e instanceof HttpResponse),
       map<HttpResponse<any>, any>((httpResponse: HttpResponse<any>) => httpResponse.body)
     );
   }
