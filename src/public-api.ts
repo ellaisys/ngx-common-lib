@@ -7,6 +7,7 @@ export * from './lib/ellaisys-lib.component';
 export * from './lib/ellaisys-lib.module';
 
 //Exporting ellaisys library services
+export * from './lib/services/loader.service';
 export * from './lib/services/http.service';
 export * from './lib/services/local-storage.service';
 export * from './lib/services/session-storage.service';
