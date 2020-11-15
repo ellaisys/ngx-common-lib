@@ -13,6 +13,9 @@ export * from './lib/services/local-storage.service';
 export * from './lib/services/session-storage.service';
 export * from './lib/services/eventbroker.service';
 
+//International Telephone Module
+export * from './lib/modules/intl-tel-input/intl-tel-input.module';
+
 //Translate module
 export * from './lib/modules/translate/translate.module';
 

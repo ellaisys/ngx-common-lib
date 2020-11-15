@@ -1,0 +1,106 @@
+<div class="input-group iti iti--allow-dropdown"
+	[ngClass]="separateDialCodeClass">
+
+	<div class="input-group-prepend iti__flag-container"
+		dropdown
+		[ngClass]="{'disabled': disabled}"
+		[isDisabled]="disabled">
+
+		<div class="btn btn-outline-secondary dropdown-toggle iti__selected-flag " dropdownToggle>
+			<div class="iti__flag iti__custom_css"
+				[ngClass]="selectedCountry?.flagClass"
+				[tooltip]="selectedCountry ? selectedCountry[tooltipField] : ''"></div>
+
+			<div *ngIf="separateDialCode"
+				class="selected-dial-code">+{{selectedCountry.dialCode}}</div>
+			<div class="iti__arrow"></div>
+		</div>
+
+		<div *dropdownMenu class="dropdown-menu country-dropdown">
+			<div class="search-container" *ngIf="boolSearchCountryFlag && searchCountryField">
+				<input id="country-search-box"
+					class="form-control"
+					[(ngModel)]="countrySearchText"
+					(keyup)="fnSearchCountry()"
+					(click)="$event.stopPropagation()"
+					[placeholder]="searchCountryPlaceholder"
+					autofocus />
+			</div>
+
+			<ul #countryList class="iti__country-list">
+				<li class="dropdown-item iti__country iti__preferred"
+					*ngFor="let country of preferredCountriesInDropDown"
+					(click)="onCountrySelect(country, focusable)"
+					[id]="country.htmlId+'-preferred'">
+					<div class="iti__flag-box">
+						<div class="iti__flag" [ngClass]="country.flagClass"></div>
+					</div>
+					<span class="iti__country-name">{{country.name}}</span>
+					<span class="iti__dial-code">+{{country.dialCode}}</span>
+				</li>
+
+				<li class="dropdown-divider iti__divider"
+					*ngIf="preferredCountriesInDropDown?.length"></li>
+
+				<li class="dropdown-item iti__country iti__standard"
+					*ngFor="let country of allCountries"
+					(click)="onCountrySelect(country, focusable)"
+					[id]="country.htmlId">
+					<div class="iti__flag-box">
+						<div class="iti__flag"
+							[ngClass]="country.flagClass"></div>
+					</div>
+					<span class="iti__country-name">{{country.name}}</span>
+					<span class="iti__dial-code">+{{country.dialCode}}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<input type="tel"
+		[id]="inputId"
+		[attr.autocomplete]="'off'"
+		[ngClass]="cssClass"
+		(blur)="onTouched()"
+		(keypress)="onInputKeyPress($event)"
+		[(ngModel)]="phoneNumber"
+		(ngModelChange)="onPhoneNumberChange()"
+		[disabled]="disabled"
+		[placeholder]="fnGetPlaceHolderData(selectedCountry?.placeHolder || '')"
+		[attr.maxLength]="maxLength"
+		[attr.validation]="phoneValidation"
+		[tabIndex]="tabIndex"
+		#focusable />
+</div>
+
+
+<!-- <div class="input-group">
+	<div class="input-group-prepend">
+		<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Action
+		</button>
+		<div class="dropdown-menu">
+			<a class="dropdown-item" href="#">Action</a>
+			<a class="dropdown-item" href="#">Another action</a>
+			<a class="dropdown-item" href="#">Something else here</a>
+			<div role="separator" class="dropdown-divider"></div>
+			<a class="dropdown-item" href="#">Separated link</a>
+		</div>
+	</div>
+
+	<input type="tel"
+		[id]="inputId"
+		[attr.autocomplete]="'off'"
+		[ngClass]="cssClass"
+		(blur)="onTouched()"
+		(keypress)="onInputKeyPress($event)"
+		[(ngModel)]="phoneNumber"
+		(ngModelChange)="onPhoneNumberChange()"
+		[disabled]="disabled"
+		[placeholder]="separateDialCodePlaceHolder(selectedCountry?.placeHolder || '')"
+		[attr.maxLength]="maxLength"
+		[attr.validation]="phoneValidation"
+		[placeholder]="customPlaceholderText"
+		[tabIndex]="tabIndex"
+		#focusable />
+</div> -->

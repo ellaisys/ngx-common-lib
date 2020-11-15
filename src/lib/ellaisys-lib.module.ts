@@ -20,12 +20,9 @@ import { SessionStorageService } from './services/session-storage.service';
 import { TranslateModule, TranslateLoader } from './modules/translate/translate.module';
 import { TranslateHttpLoader } from './modules/translate/commons/http-loader';
 import { PipeModule } from './modules/pipe/pipe.module';
-
-
-//Library Directives
-import { IntlPhoneDirective } from './directives/intl-phone/intl-phone.directive';
 import { LoggerModule } from './modules/logger/logger.module';
 import { ValidatorModule } from './modules/validator/validator.module';
+import { IntlTelInputModule } from './modules/intl-tel-input/intl-tel-input.module';
 
 
 //Initialization Functions
@@ -50,9 +47,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     EllaisysLibComponent,
     LoaderComponent,
     ReadMoreComponent,
-
-    //Directives
-    IntlPhoneDirective,
   ],
   imports: [
     HttpClientModule,
@@ -78,6 +72,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PipeModule,
     LoggerModule,
     ValidatorModule,
+    IntlTelInputModule,
   ],
   providers: [
     {
