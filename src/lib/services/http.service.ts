@@ -90,9 +90,20 @@ export class HttpService {
      * @param encoded
      * @param onlyServerURL
      */
-    public async post<T>(_uri: string, _body: any, _encoded:boolean=false, _onlyServerURL: boolean=false){
+    public async post<T>(_uri: string, _body: any, _encoded:boolean=false, _onlyServerURL: boolean=false, _params: Object=null){
         let url: string = ((_onlyServerURL)?HttpConfiguration.server:this.endpoint) + _uri;
         let options: Object = (_encoded)?_ENCODED_FORM_OPTION:_JSON_HEADER_OPTION;
+
+        //Add params if exists
+        if (_params) {
+            if (_params instanceof HttpParams) {
+                options['params'] = _params;
+            } else if (_params instanceof Object) {
+                options['params'] = this.getParams(_params);
+            } else {
+                //Do nothing
+            } //End if
+        } //End if
 
         return await this._http.post<T>(url, _body, options).toPromise();
     } //Function ends
