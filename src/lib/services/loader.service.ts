@@ -1,6 +1,5 @@
 import {Injector} from "@angular/core";
 
 export class LoaderService {
-    static injector: Injector;
-    
+    static injector: Injector = null;
 } //Class ends

@@ -4,12 +4,12 @@ import { Injectable, Inject } from '@angular/core';
     providedIn: 'root'
 })
 export class HttpConfiguration {
-    private httpConfig: any;
+    private httpConfig: any = null;
 
     //Http API Endpoint & configurations
-    public static server: string;
-    public static apiUrl: string;
-    public static title: string;
+    public static server: string = null;
+    public static apiUrl: string = null;
+    public static title: string  = null;
 
     //Http Header for Authorization Token
     public static headers: any = {
@@ -18,7 +18,7 @@ export class HttpConfiguration {
     };
 
     //HTTP Params
-    public static request: IRequest;
+    public static request: IRequest = null;
 
     //Default constructor
     constructor(

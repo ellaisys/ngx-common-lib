@@ -4,11 +4,11 @@ import { Injectable, Inject } from '@angular/core';
     providedIn: 'platform'
 })
 export class StorageConfiguration {
-    private storageConfig: any
+    private storageConfig: any = null;
 
-    public static STORAGE_KEY: string;
-    public static SESSION_AUTH_CLAIM_KEY: string;
-    public static LOCAL_STORAGE_AUTH_CREDENTIALS: string;
+    public static STORAGE_KEY: string = null;
+    public static SESSION_AUTH_CLAIM_KEY: string = null;
+    public static LOCAL_STORAGE_AUTH_CREDENTIALS: string = null;
 
     
     //Default constructor
