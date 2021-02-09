@@ -4,7 +4,9 @@
   "lib": {
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
-      "lpn": "google-libphonenumber"
+      "google-libphonenumber": "lpn",
+      "ngx-bootstrap/dropdown": "dropdown",
+      "ngx-bootstrap/tooltip": "tooltip"
     }
   }
 }
