@@ -6,17 +6,17 @@ import { DatePipe } from '@angular/common';
 })
 export class NiceDateFormatPipe implements PipeTransform {
     transform(value: string) {
-       var _value = Number(value);
-       var dif = Math.floor( ( (Date.now() - _value) / 1000 ) / 86400 );
+        var _value = Number(value);
+        var dif = Math.floor(((Date.now() - _value)/1000)/86400);
        
-       if ( dif < 30 ){
+        if ( dif < 30 ){
             return fnConvertToNiceDate(value);
-       }else{
-           var datePipe = new DatePipe("en-US");
-           value = datePipe.transform(value, 'MMM-dd-yyyy');
-           value = 'Older';
-           return value;
-       }
+        } else {
+            var datePipe = new DatePipe("en-US");
+            value = datePipe.transform(value, 'MMM-dd-yyyy');
+            value = 'Older';
+            return value;
+        } //End if
     }
 } //Class ends
 
