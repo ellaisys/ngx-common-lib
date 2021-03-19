@@ -54,9 +54,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     //Boilerplate Modules
     TranslateModule.forChild({
       loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
       },
       isolate: false
     }),
@@ -90,7 +90,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 })
 export class EllaisysLibModule {
 
-  static forRoot(_environment: any): ModuleWithProviders<EllaisysLibModule> {
+  static forRoot(_environment: any, _winLocation?: any): ModuleWithProviders<EllaisysLibModule> {
 
     //Get Application Environemnt data
     let environment: any = _environment?.env;
@@ -107,6 +107,7 @@ export class EllaisysLibModule {
         StorageConfiguration,
 
         { provide: 'environment', useValue: environment },
+        { provide: 'win_location', useValue: _winLocation },
         { provide: APP_INITIALIZER, useFactory: initLibrary, 
           deps: [
             HttpConfiguration, 

@@ -1,10 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 
+
 @Injectable({
     providedIn: 'root'
 })
 export class HttpConfiguration {
     private httpConfig: any = null;
+    private dynamicServerHost: string | null;
 
     //Http API Endpoint & configurations
     public static server: string = null;
@@ -22,20 +24,32 @@ export class HttpConfiguration {
 
     //Default constructor
     constructor(
-        @Inject('environment') private _environment: any
+        @Inject('environment') private _environment: any,
+        @Inject('win_location') private _winLocation: any | null
     ) { 
-        this.httpConfig = this._environment.http_config; 
+        this.httpConfig = this._environment.http_config;
+        let winLocation: any = this._winLocation?.win_location;
+        if (winLocation != null) {
+            this.dynamicServerHost = winLocation.origin;
+            this.dynamicServerHost += "/";
+        } //End if
     } //Function ends
 
     public init(): void {
         //Initialize variables
         let httpConfig = this.httpConfig;
-
-        console.log(httpConfig);
     
         if (httpConfig && httpConfig.api_server) {
+            //Force the Environment File config
+            let isForceEnvHost: boolean = httpConfig.api_server.force_env;
+
+            let hostHttpServer: string = httpConfig.api_server.server;
+            if (!isForceEnvHost && (this.dynamicServerHost != null)) {
+                hostHttpServer = this.dynamicServerHost;
+            } //End if
+
             //Http API Endpoint & configurations
-            HttpConfiguration.server = httpConfig.api_server.server;
+            HttpConfiguration.server = hostHttpServer;
             HttpConfiguration.apiUrl = httpConfig.api_server.apiUrl;
             HttpConfiguration.title = httpConfig.api_server.title;
 
