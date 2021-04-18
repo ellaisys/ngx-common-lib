@@ -50,7 +50,7 @@ export class HttpService {
         if (_data) {
             params = new HttpParams();
             Object.keys(_data).forEach((key) => {
-                params.set(key, _data[key]);
+                params = params.append(key, _data[key]);
             });
         } //End if
 
