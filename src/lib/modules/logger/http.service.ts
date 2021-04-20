@@ -5,7 +5,6 @@ import { filter, map } from 'rxjs/operators';
 import { LogInterface } from './types/ngx-log.interface';
 
 
-
 @Injectable()
 export class LoggerHttpService {
   constructor(private readonly httpBackend: HttpBackend) { }
@@ -14,10 +13,11 @@ export class LoggerHttpService {
     // HttpBackend skips all HttpInterceptors
     // They may log errors using this service causing circular calls
     const req = new HttpRequest<any>('POST', url, log, options || {});
+
     return this.httpBackend.handle(req).pipe(
-      filter(e => e instanceof HttpResponse),
+      filter((e: any) => e instanceof HttpResponse),
       map<HttpResponse<any>, any>((httpResponse: HttpResponse<any>) => httpResponse.body)
     );
   }
 
-}
+} //Class ends

@@ -1,4 +1,4 @@
-<div class="simple-notification"
+<!-- <div class="simple-notification"
      [@enterLeave]="item.state"
      (click)="onClick($event)"
      [class]="theClass"
@@ -50,15 +50,15 @@
     <div class="sn-progress-loader" *ngIf="showProgressBar">
         <span [ngStyle]="{'width': progressWidth + '%'}"></span>
     </div>
-</div>
+</div> -->
 
-<div class="alert notification-alert" role="alert"
+<div class="alert notification-alert animate__animated animate__bounce" role="alert"
     [ngClass]="{
-        'cus-alert-default': item.type === 'alert',
-        'cus-alert-failure': item.type === 'error',
-        'cus-alert-warning': item.type === 'warn',
-        'cus-alert-success': item.type === 'success',
-        'cus-alert-normal': item.type === 'info',
+        'alert-default': item.type === 'alert',
+        'alert-danger': item.type === 'error',
+        'alert-warning': item.type === 'warn',
+        'alert-success': item.type === 'success',
+        'alert-normal': item.type === 'info',
         'bare': item.type === 'bare',
         'rtl-mode': rtl
     }"
@@ -66,7 +66,15 @@
     (mouseenter)="onEnter()"
     (mouseleave)="onLeave()"
     *ngIf="!item.html">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><img src="assets/images/notifications/alert-close.png" /></button>
-    <p class="cal-heading"><span class="icon" *ngIf="item.icon !== 'bare'" [innerHTML]="safeSvg"></span>{{item.title}}</p>
+    
+    <button type="button" class="close" data-dismiss="dismiss" aria-label="Close">
+        <img src="assets/images/notifications/alert-close.png" />
+    </button>
+
+    <p class="cal-heading">
+        <span class="icon" *ngIf="item.icon !== 'bare'" [innerHTML]="safeSvg"></span>
+        {{item.title}}
+    </p>
+
     <p class="cal-name">{{item.content}}</p>
 </div>

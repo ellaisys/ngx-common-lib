@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EllaisysLibComponent } from './ellaisys-lib.component';
 
@@ -6,7 +6,7 @@ describe('EllaisysLibComponent', () => {
   let component: EllaisysLibComponent;
   let fixture: ComponentFixture<EllaisysLibComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EllaisysLibComponent ]
     })

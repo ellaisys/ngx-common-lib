@@ -107,7 +107,7 @@ export class MapperService {
     const req = new HttpRequest<SourceMap>('GET', sourceMapLocation);
 
     return this.httpBackend.handle(req).pipe(
-      filter(e => (e instanceof HttpResponse)),
+      filter((e: any) => (e instanceof HttpResponse)),
       map<HttpResponse<SourceMap>, SourceMap>((httpResponse: HttpResponse<SourceMap>) => httpResponse.body),
       map<SourceMap, LogPosition>(sourceMap => {
         // store file in cache if not already stored
@@ -142,7 +142,7 @@ export class MapperService {
       return of(new LogPosition('', 0, 0));
     }
 
-    return of([
+    return of<[LogPosition, string]>([
       MapperService.getPosition(stackLine),
       MapperService.getMapFilePath(stackLine)
     ]).pipe(
@@ -164,10 +164,9 @@ export class MapperService {
         return this._getSourceMap(sourceMapLocation, distPosition);
       })
     );
+  } //Function ends
 
-
-  }
-}
+} //Class ends
 
 
 

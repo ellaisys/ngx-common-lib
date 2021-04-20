@@ -8,7 +8,7 @@ export class LoggerUtils {
     return `${timestamp} ${logLevel}${fileDetails}`;
   }
 
-  static getColor(level: LoggerLevel): 'blue' | 'teal' | 'gray' | 'red' | 'yellow' | 'green' |undefined {
+  static getColor(level: LoggerLevel): 'blue' | 'teal' | 'gray' | 'red' | 'yellow' | 'green' | undefined {
     switch (level) {
       case LoggerLevel.TRACE:
         return 'blue';
@@ -25,7 +25,7 @@ export class LoggerUtils {
         return 'red';
       case LoggerLevel.OFF:
       default:
-        return;
+        return null;
     }
   }
 

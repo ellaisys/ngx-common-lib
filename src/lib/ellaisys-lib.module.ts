@@ -20,12 +20,9 @@ import { SessionStorageService } from './services/session-storage.service';
 import { TranslateModule, TranslateLoader } from './modules/translate/translate.module';
 import { TranslateHttpLoader } from './modules/translate/commons/http-loader';
 import { PipeModule } from './modules/pipe/pipe.module';
-
-
-//Library Directives
-import { IntlPhoneDirective } from './directives/intl-phone/intl-phone.directive';
 import { LoggerModule } from './modules/logger/logger.module';
 import { ValidatorModule } from './modules/validator/validator.module';
+import { IntlTelInputModule } from './modules/intl-tel-input/intl-tel-input.module';
 
 
 //Initialization Functions
@@ -50,9 +47,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     EllaisysLibComponent,
     LoaderComponent,
     ReadMoreComponent,
-
-    //Directives
-    IntlPhoneDirective,
   ],
   imports: [
     HttpClientModule,
@@ -60,9 +54,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     //Boilerplate Modules
     TranslateModule.forChild({
       loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
       },
       isolate: false
     }),
@@ -78,6 +72,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PipeModule,
     LoggerModule,
     ValidatorModule,
+    IntlTelInputModule,
   ],
   providers: [
     {
@@ -95,7 +90,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 })
 export class EllaisysLibModule {
 
-  static forRoot(_environment: any): ModuleWithProviders<EllaisysLibModule> {
+  static forRoot(_environment: any, _winLocation?: any): ModuleWithProviders<EllaisysLibModule> {
 
     //Get Application Environemnt data
     let environment: any = _environment?.env;
@@ -112,6 +107,7 @@ export class EllaisysLibModule {
         StorageConfiguration,
 
         { provide: 'environment', useValue: environment },
+        { provide: 'win_location', useValue: _winLocation },
         { provide: APP_INITIALIZER, useFactory: initLibrary, 
           deps: [
             HttpConfiguration, 
