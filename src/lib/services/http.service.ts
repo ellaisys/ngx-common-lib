@@ -27,19 +27,6 @@ export class HttpService {
 
 
     /**
-     * This method gets the data by parameters
-     * 
-     * @param uri 
-     * @param params 
-     */
-    // public async getWithParams<T>(_uri: string, _params: string){
-    //     const options = _params ?{ params: new HttpParams().set('query', _params) } : {};
-    //     let url = this.endpoint+_uri;
-    //     return await this._http.get<T>(url, options);
-    // } //Function ends
-
-
-    /**
      * Convert the object into Http Params
      * 
      * @param _data 
@@ -115,9 +102,22 @@ export class HttpService {
      * @param uri 
      * @param body
      */
-    public async put<T>(_uri: string, _body: any) {
-        let url = this.endpoint+_uri;    
-        return await this._http.put<T>(url, _body, _JSON_HEADER_OPTION).toPromise();
+    public async put<T>(_uri: string, _body: any, _params: Object=null) {
+        let url = this.endpoint+_uri;
+        let options: Object = _JSON_HEADER_OPTION;
+
+        //Add params if exists
+        if (_params) {
+            if (_params instanceof HttpParams) {
+                options['params'] = _params;
+            } else if (_params instanceof Object) {
+                options['params'] = this.getParams(_params);
+            } else {
+                //Do nothing
+            } //End if
+        } //End if 
+
+        return await this._http.put<T>(url, _body, options).toPromise();
     } //Function ends
  
 
@@ -126,9 +126,22 @@ export class HttpService {
      * 
      * @param uri
      */
-    public async delete<T>(_uri: string){
-        let url = this.endpoint+_uri;      
-        return await this._http.delete<T>(url).toPromise();
+    public async delete<T>(_uri: string, _params: Object=null){
+        let url = this.endpoint+_uri;
+        let options: Object = _JSON_HEADER_OPTION;
+
+        //Add params if exists
+        if (_params) {
+            if (_params instanceof HttpParams) {
+                options['params'] = _params;
+            } else if (_params instanceof Object) {
+                options['params'] = this.getParams(_params);
+            } else {
+                //Do nothing
+            } //End if
+        } //End if
+        
+        return await this._http.delete<T>(url, _params).toPromise();
     } //Function ends
 
     
