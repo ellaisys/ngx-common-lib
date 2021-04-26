@@ -869,6 +869,10 @@ li.iti__country:hover {
 	margin-left: 15px;
 }
 
+.iti .iti__selected-flag {
+	min-width: 50px;
+}
+
 .iti.separate-dial-code .iti__selected-flag,
 .iti.separate-dial-code.iti--allow-dropdown.iti-sdc-2 .iti__selected-flag,
 .iti.separate-dial-code.iti--allow-dropdown.iti-sdc-3 .iti__selected-flag,

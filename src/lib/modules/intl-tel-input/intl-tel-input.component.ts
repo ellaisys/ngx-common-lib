@@ -57,7 +57,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 	@Input() maxLength = '';
 	@Input() tooltipField: TooltipLabel;
 	@Input() selectFirstCountry = true;
-	@Input() selectedCountryISO: CountryISO;
+	@Input() selectedCountryISO: CountryISO|string;
 	@Input() phoneValidation = true;
 	@Input() inputId = 'phone';
 	@Input() separateDialCode = true;
@@ -298,6 +298,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 					: '',
 				countryCode: countryCode.toUpperCase(),
 				dialCode: '+' + this.selectedCountry.dialCode,
+				iddCode: this.selectedCountry.dialCode,
 			});
 		}
 	}
@@ -338,6 +339,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 					: '',
 				countryCode: this.selectedCountry.iso2.toUpperCase(),
 				dialCode: '+' + this.selectedCountry.dialCode,
+				iddCode: this.selectedCountry.dialCode,
 			});
 		} else {
 			// Reason: avoid https://stackoverflow.com/a/54358133/1617590
