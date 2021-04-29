@@ -170,7 +170,7 @@ export class RequestInterceptor implements HttpInterceptor {
         const _HEADER_TOKEN_BEARER: string = HttpConfiguration.headers.token_bearer;
 
         let claim: any = this._session.getItem(StorageConfiguration.SESSION_AUTH_CLAIM_KEY);
-        console.log("Result",claim);
+        //console.log("Result",claim);
 
         if (claim!=null) {
             let _AUTH_TOKEN: string = claim.token;
