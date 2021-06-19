@@ -1,4 +1,4 @@
-import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 //Boilerplate files
@@ -62,7 +62,7 @@ export class HttpService {
      * 
      * @param uri
      */
-    public async get<T>(_uri: string, _params: Object=null, _encoded:boolean=false) {
+    public async get<T>(_uri: string, _params: Object=null, _encoded:boolean=false, _download:boolean=false) {
         let options: Object = (_encoded)?_ENCODED_FORM_OPTION:_JSON_HEADER_OPTION;
 
         //Add params if exists
@@ -74,6 +74,12 @@ export class HttpService {
             } else {
                 //Do nothing
             } //End if
+        } //End if
+
+        //Add download response params
+        if (_download) {
+            options['reportProgress'] = true;
+            options['responseType'] = 'blob';
         } //End if
 
         let url = this.endpoint+_uri;
