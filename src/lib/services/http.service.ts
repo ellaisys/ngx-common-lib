@@ -162,7 +162,7 @@ export class HttpService {
             } //End if
         } //End if
         
-        return await this._http.delete<T>(url, _params).toPromise();
+        return await this._http.delete<T>(url, options).toPromise();
     } //Function ends
 
     
