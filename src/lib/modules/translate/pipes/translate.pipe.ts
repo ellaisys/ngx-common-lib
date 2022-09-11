@@ -10,11 +10,11 @@ import {Subscription} from 'rxjs';
 })
 export class TranslatePipe implements PipeTransform, OnDestroy {
   value: string = '';
-  lastKey: string;
-  lastParams: any[];
-  onTranslationChange: EventEmitter<TranslationChangeEvent>;
-  onLangChange: EventEmitter<LangChangeEvent>;
-  onDefaultLangChange: EventEmitter<DefaultLangChangeEvent>;
+  lastKey?: string;
+  lastParams?: any[];
+  onTranslationChange?: EventEmitter<TranslationChangeEvent>;
+  onLangChange?: EventEmitter<LangChangeEvent>;
+  onDefaultLangChange?: EventEmitter<DefaultLangChangeEvent>;
 
   constructor(private translate: TranslateService, private _ref: ChangeDetectorRef) {
   }
@@ -46,7 +46,7 @@ export class TranslatePipe implements PipeTransform, OnDestroy {
       return this.value;
     }
 
-    let interpolateParams: Object;
+    let interpolateParams: Object = '';
     if (isDefined(args[0]) && args.length) {
       if (typeof args[0] === 'string' && args[0].length) {
         // we accept objects written in the template such as {n:1}, {'n':1}, {n:'v'}

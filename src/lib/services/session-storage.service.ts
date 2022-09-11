@@ -8,7 +8,7 @@ export class SessionStorageService {
 
     //Default Constructor
     constructor() {
-        this._SESSION_SESSION_STORAGE_APP_PREFIX = StorageConfiguration.STORAGE_KEY;
+        this._SESSION_SESSION_STORAGE_APP_PREFIX = StorageConfiguration.STORAGE_KEY as string;
         this._storage = sessionStorage;
     } //Function ends
 
@@ -46,7 +46,7 @@ export class SessionStorageService {
      * @param key 
      */
     public getItem(key: string): any {
-        return JSON.parse(this._storage.getItem(`${this._SESSION_SESSION_STORAGE_APP_PREFIX}${key}`));
+        return JSON.parse(this._storage.getItem(`${this._SESSION_SESSION_STORAGE_APP_PREFIX}${key}`) as string);
     } //Function ends
 
 

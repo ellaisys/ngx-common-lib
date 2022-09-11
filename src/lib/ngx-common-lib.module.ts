@@ -88,19 +88,19 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpService
   ]
 })
-export class EllaisysLibModule {
+export class NgxCommonLibModule {
 
-  static forRoot(_environment: any, _winLocation?: any): ModuleWithProviders<EllaisysLibModule> {
+  static forRoot(_environment: any, _winLocation?: any): ModuleWithProviders<NgxCommonLibModule> {
 
     //Get Application Environemnt data
     let environment: any = _environment?.env;
 
     if ((!environment.production) && environment.logs) {
-      console.log('ngx-common-lib.environment', environment);
+      console.log('environment', environment);
     } //End if
     
     return {
-      ngModule: EllaisysLibModule,
+      ngModule: NgxCommonLibModule,
       providers: [
         //Configurations
         HttpConfiguration,

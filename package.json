@@ -2,13 +2,13 @@
   "name": "ngx-common-lib",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^9.1.9",
-    "@angular/core": "^9.1.9"
+    "@angular/compiler": "^14.2.0",
+    "@angular/core": "^14.2.0"
   },
   "dependencies": {
-    "tslib": "^1.10.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@types/google-libphonenumber": "^7.4.19"
+    "@types/google-libphonenumber": "^7.4.23"
   }
 }

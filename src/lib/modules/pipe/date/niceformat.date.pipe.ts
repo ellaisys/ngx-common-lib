@@ -13,7 +13,7 @@ export class NiceDateFormatPipe implements PipeTransform {
             return fnConvertToNiceDate(value);
         } else {
             var datePipe = new DatePipe("en-US");
-            value = datePipe.transform(value, 'MMM-dd-yyyy');
+            value = (datePipe.transform(value, 'MMM-dd-yyyy') as string);
             value = 'Older';
             return value;
         } //End if

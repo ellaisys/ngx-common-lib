@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EllaisysLibService } from './ngx-common-lib.service';
+import { NgxCommonLibService } from './ngx-common-lib.service';
 
-describe('EllaisysLibService', () => {
-  let service: EllaisysLibService;
+describe('NgxCommonLibService', () => {
+  let service: NgxCommonLibService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EllaisysLibService);
+    service = TestBed.inject(NgxCommonLibService);
   });
 
   it('should be created', () => {

@@ -1,229 +1,147 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
-
-import { LoggerHttpService } from './http.service';
-import { LogPosition } from './types/log-position';
+import { Inject, Injectable } from '@angular/core';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoggerLevel } from './types/logger-level.enum';
-import { LoggerConfig } from './logger.config';
-import { LoggerConfigEngine } from './config.engine';
-import { LoggerUtils } from './utils/logger.utils';
-import { LoggerMonitor } from './logger-monitor';
-import { LogInterface } from './types/ngx-log.interface';
-import { MapperService } from './mapper.service';
+import { INGXLoggerConfigEngine } from './config/iconfig-engine';
+import { INGXLoggerConfig, TOKEN_LOGGER_CONFIG } from './config/iconfig';
+import { INGXLoggerMetadataService, TOKEN_LOGGER_METADATA_SERVICE } from './metadata/imetadata.service';
+import { INGXLoggerRulesService, TOKEN_LOGGER_RULES_SERVICE } from './rules/irules.service';
+import { INGXLoggerMapperService, TOKEN_LOGGER_MAPPER_SERVICE } from './mapper/imapper.service';
+import { INGXLoggerMonitor } from './monitor/ilogger-monitor';
+import { INGXLoggerWriterService, TOKEN_LOGGER_WRITER_SERVICE } from './writer/iwriter.service';
+import { INGXLoggerServerService, TOKEN_LOGGER_SERVER_SERVICE } from './server/iserver.service';
+import { take } from 'rxjs/operators';
+import { INGXLoggerConfigEngineFactory, TOKEN_LOGGER_CONFIG_ENGINE_FACTORY } from './config/iconfig-engine-factory';
 
-export const Levels = [
-  'TRACE',
-  'DEBUG',
-  'INFO',
-  'LOG',
-  'WARN',
-  'ERROR',
-  'FATAL',
-  'OFF'
-];
-
-
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LoggerService {
-  private readonly _isIE: boolean;
-  private readonly _logFunc: Function;
-  private config: LoggerConfigEngine;
-  private _customHttpHeaders: HttpHeaders;
-  private _customParams: HttpParams;
-  private _withCredentials: boolean = false;
-
-  private _loggerMonitor: LoggerMonitor;
+  private _loggerMonitor: INGXLoggerMonitor|null = null;
+  private configEngine: INGXLoggerConfigEngine;
 
   constructor(
-    private readonly mapperService: MapperService, 
-    private readonly httpService: LoggerHttpService,
-    loggerConfig: LoggerConfig
+    @Inject(TOKEN_LOGGER_CONFIG) config: INGXLoggerConfig,
+    @Inject(TOKEN_LOGGER_CONFIG_ENGINE_FACTORY) configEngineFactory: INGXLoggerConfigEngineFactory,
+    @Inject(TOKEN_LOGGER_METADATA_SERVICE) private metadataService: INGXLoggerMetadataService,
+    @Inject(TOKEN_LOGGER_RULES_SERVICE) private ruleService: INGXLoggerRulesService,
+    @Inject(TOKEN_LOGGER_MAPPER_SERVICE) private mapperService: INGXLoggerMapperService,
+    @Inject(TOKEN_LOGGER_WRITER_SERVICE) private writerService: INGXLoggerWriterService,
+    @Inject(TOKEN_LOGGER_SERVER_SERVICE) private serverService: INGXLoggerServerService,
   ) {
-    this._isIE = navigator && navigator.userAgent &&
-      !!(navigator.userAgent.indexOf('MSIE') !== -1 || navigator.userAgent.match(/Trident\//) || navigator.userAgent.match(/Edge\//));
-
-    // each instance of the logger should have their own config engine
-    this.config = new LoggerConfigEngine(loggerConfig);
-
-    this._logFunc = this._isIE ? this._logIE.bind(this) : this._logModern.bind(this);
+    this.configEngine = configEngineFactory.provideConfigEngine(config);
   }
 
-  public trace(message, ...additional: any[]): void {
+  /** Get a readonly access to the level configured for the NGXLogger */
+  get level(): LoggerLevel {
+    return this.configEngine.level;
+  }
+
+  /** Get a readonly access to the serverLogLevel configured for the NGXLogger */
+  get serverLogLevel(): LoggerLevel {
+    return this.configEngine.serverLogLevel;
+  }
+
+  public trace(message?: any | (() => any), ...additional: any[]): void {
     this._log(LoggerLevel.TRACE, message, additional);
   }
 
-  public debug(message, ...additional: any[]): void {
+  public debug(message?: any | (() => any), ...additional: any[]): void {
     this._log(LoggerLevel.DEBUG, message, additional);
   }
 
-  public info(message, ...additional: any[]): void {
+  public info(message?: any | (() => any), ...additional: any[]): void {
     this._log(LoggerLevel.INFO, message, additional);
   }
 
-  public log(message, ...additional: any[]): void {
+  public log(message?: any | (() => any), ...additional: any[]): void {
     this._log(LoggerLevel.LOG, message, additional);
   }
 
-  public warn(message, ...additional: any[]): void {
+  public warn(message?: any | (() => any), ...additional: any[]): void {
     this._log(LoggerLevel.WARN, message, additional);
   }
 
-  public error(message, ...additional: any[]): void {
+  public error(message?: any | (() => any), ...additional: any[]): void {
     this._log(LoggerLevel.ERROR, message, additional);
   }
 
-  public fatal(message, ...additional: any[]): void {
+  public fatal(message?: any | (() => any), ...additional: any[]): void {
     this._log(LoggerLevel.FATAL, message, additional);
   }
 
+  /** @deprecated customHttpHeaders is now part of the config, this should be updated via @see updateConfig */
   public setCustomHttpHeaders(headers: HttpHeaders) {
-    this._customHttpHeaders = headers;
+    const config = this.getConfigSnapshot();
+    config.customHttpHeaders = headers;
+    this.updateConfig(config);
   }
 
+  /** @deprecated customHttpParams is now part of the config, this should be updated via @see updateConfig */
   public setCustomParams(params: HttpParams) {
-    this._customParams = params;
+    const config = this.getConfigSnapshot();
+    config.customHttpParams = params;
+    this.updateConfig(config);
   }
 
+  /** @deprecated withCredentials is now part of the config, this should be updated via @see updateConfig */
   public setWithCredentialsOptionValue(withCredentials: boolean) {
-    this._withCredentials = withCredentials;
+    const config = this.getConfigSnapshot();
+    config.withCredentials = withCredentials;
+    this.updateConfig(config);
   }
 
-  public registerMonitor(monitor: LoggerMonitor) {
+  /**
+   * Register a INGXLoggerMonitor that will be trigger when a log is either written or sent to server
+   * 
+   * There is only one monitor, registering one will overwrite the last one if there was one
+   * @param monitor 
+   */
+  public registerMonitor(monitor: INGXLoggerMonitor) {
     this._loggerMonitor = monitor;
   }
 
-  public updateConfig(config: LoggerConfig) {
-    this.config.updateConfig(config);
+  /** Set config of logger
+   * 
+   * Warning : This overwrites all the config, if you want to update only one property, you should use @see getConfigSnapshot before
+   */
+  public updateConfig(config: INGXLoggerConfig) {
+    this.configEngine.updateConfig(config);
   }
 
-  public getConfigSnapshot(): LoggerConfig {
-    return this.config.getConfig();
+  /** Get config of logger */
+  public getConfigSnapshot(): INGXLoggerConfig {
+    return this.configEngine.getConfig();
   }
 
-  private _logIE(level: LoggerLevel, metaString: string, message: string, additional: any[]): void {
+  private _log(level: LoggerLevel, message?: any | (() => any), additional: any[] = []): void {
+    const config = this.configEngine.getConfig();
 
-    // Coloring doesn't work in IE
-    // make sure additional isn't null or undefined so that ...additional doesn't error
-    additional = additional || [];
+    const shouldCallWriter = this.ruleService.shouldCallWriter(level, config, message, additional);
+    const shouldCallServer = this.ruleService.shouldCallServer(level, config, message, additional);
+    const shouldCallMonitor = this.ruleService.shouldCallMonitor(level, config, message, additional);
 
-    switch (level) {
-      case LoggerLevel.WARN:
-        console.warn(`${metaString} `, message, ...additional);
-        break;
-      case LoggerLevel.ERROR:
-      case LoggerLevel.FATAL:
-        console.error(`${metaString} `, message, ...additional);
-        break;
-      case LoggerLevel.INFO:
-        console.info(`${metaString} `, message, ...additional);
-        break;
-      default:
-        console.log(`${metaString} `, message, ...additional);
-    }
-  }
-
-  private _logModern(level: LoggerLevel, metaString: string, message: string, additional: any[]): void {
-
-    const color = LoggerUtils.getColor(level);
-
-    // make sure additional isn't null or undefined so that ...additional doesn't error
-    additional = additional || [];
-
-    switch (level) {
-      case LoggerLevel.WARN:
-        console.warn(`%c${metaString}`, `color:${color}`, message, ...additional);
-        break;
-      case LoggerLevel.ERROR:
-      case LoggerLevel.FATAL:
-        console.error(`%c${metaString}`, `color:${color}`, message, ...additional);
-        break;
-      case LoggerLevel.INFO:
-        console.info(`%c${metaString}`, `color:${color}`, message, ...additional);
-        break;
-      //  Disabling console.trace since the stack trace is not helpful. it is showing the stack trace of
-      // the console.trace statement
-      // case LoggerLevel.TRACE:
-      //   console.trace(`%c${metaString}`, `color:${color}`, message, ...additional);
-      //   break;
-
-      //  Disabling console.debug, because Has this hidden by default.
-      // case LoggerLevel.DEBUG:
-      //   console.debug(`%c${metaString}`, `color:${color}`, message, ...additional);
-      //   break;
-      default:
-        console.log(`%c${metaString}`, `color:${color}`, message, ...additional);
-    }
-  }
-
-  private _log(level: LoggerLevel, message, additional: any[] = [], logOnServer: boolean = true): void {
-    const config = this.config.getConfig();
-    const isLog2Server = logOnServer && config.serverLoggingUrl && level >= config.serverLogLevel;
-    const isLogLevelEnabled = level >= config.level;
-
-    //Check if any log is enabled
-    if (!(message && (isLog2Server || isLogLevelEnabled))) {
+    if (!shouldCallWriter && !shouldCallServer && !shouldCallMonitor) {
+      // If nothing is to be called we return
       return;
-    } //End if
+    }
 
-    const logLevelString = Levels[level];
-
-    message = typeof message === 'function' ? message() : message;
-    message = LoggerUtils.prepareMessage(message);
-
-    // only use validated parameters for HTTP requests
-    const validatedAdditionalParameters = LoggerUtils.prepareAdditionalParameters(additional);
-
-    const timestamp = new Date().toISOString();
-
-    // const callerDetails = LoggerUtils.getCallerDetails();
-    this.mapperService.getCallerDetails(config.enableSourceMaps).subscribe((callerDetails: LogPosition) => {
-      const logObject: LogInterface = {
-        message: message,
-        additional: validatedAdditionalParameters,
-        level: level,
-        timestamp: timestamp,
-        fileName: callerDetails.fileName,
-        lineNumber: callerDetails.lineNumber.toString()
-      };
-
-      if (this._loggerMonitor && isLogLevelEnabled) {
-        this._loggerMonitor.onLog(logObject);
+    const metadata = this.metadataService.getMetadata(level, config, message, additional);
+    this.mapperService.getLogPosition(config, metadata).pipe(take(1)).subscribe(logPosition => {
+      if (logPosition) {
+        metadata.fileName = logPosition.fileName;
+        metadata.lineNumber = logPosition.lineNumber;
+        metadata.columnNumber = logPosition.columnNumber;
       }
 
-      if (isLog2Server) {
-        // make sure the stack gets sent to the server
-        message = message instanceof Error ? message.stack : message;
-        logObject.message = message;
-
-        const headers = this._customHttpHeaders || new HttpHeaders();
-        headers.set('Content-Type', 'application/json');
-
-        const options = {
-          headers: headers,
-          params: this._customParams || new HttpParams(),
-          responseType: config.httpResponseType || 'json',
-          withCredentials: this._withCredentials
-        };
-        // Allow logging on server even if client log level is off
-        this.httpService.logOnServer(config.serverLoggingUrl, logObject, options).subscribe((res: any) => {
-            // I don't think we should do anything on success
-          },
-          (error: HttpErrorResponse) => {
-            this._log(LoggerLevel.ERROR, `FAILED TO LOG ON SERVER: ${message}`, [error], false);
-          }
-        );
-      } //End if
-
-
-      // if no message or the log level is less than the environ
-      if (isLogLevelEnabled && !config.disableConsoleLogging) {
-        const metaString = LoggerUtils.prepareMetaString(timestamp, logLevelString,
-          callerDetails.fileName, callerDetails.lineNumber.toString());
-
-        return this._logFunc(level, metaString, message, additional);
-      } //End if 
-     
+      if (shouldCallMonitor && this._loggerMonitor) {
+        this._loggerMonitor.onLog(metadata, config);
+      }
+      if (shouldCallWriter) {
+        this.writerService.writeMessage(metadata, config);
+      }
+      if (shouldCallServer) {
+        this.serverService.sendToServer(metadata, config);
+      }
     });
   }
 }

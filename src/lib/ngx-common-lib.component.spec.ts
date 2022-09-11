@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { EllaisysLibComponent } from './ngx-common-lib.component';
+import { NgxCommonLibComponent } from './ngx-common-lib.component';
 
-describe('EllaisysLibComponent', () => {
-  let component: EllaisysLibComponent;
-  let fixture: ComponentFixture<EllaisysLibComponent>;
+describe('NgxCommonLibComponent', () => {
+  let component: NgxCommonLibComponent;
+  let fixture: ComponentFixture<NgxCommonLibComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EllaisysLibComponent ]
+      declarations: [ NgxCommonLibComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EllaisysLibComponent);
+    fixture = TestBed.createComponent(NgxCommonLibComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

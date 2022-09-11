@@ -7,12 +7,12 @@ import {equals, isDefined} from './../commons/util';
   selector: '[translate],[ngx-translate]'
 })
 export class TranslateDirective implements AfterViewChecked, OnDestroy {
-  key: string;
+  key?: string;
   lastParams: any;
-  currentParams: any;
-  onLangChangeSub: Subscription;
-  onDefaultLangChangeSub: Subscription;
-  onTranslationChangeSub: Subscription;
+  currentParams?: any;
+  onLangChangeSub?: Subscription;
+  onDefaultLangChangeSub?: Subscription;
+  onTranslationChangeSub?: Subscription;
 
   @Input() set translate(key: string) {
     if (key) {
@@ -62,13 +62,13 @@ export class TranslateDirective implements AfterViewChecked, OnDestroy {
     // if the element is empty
     if (!nodes.length) {
       // we add the key as content
-      this.setContent(this.element.nativeElement, this.key);
+      this.setContent(this.element.nativeElement, (this.key as string));
       nodes = this.element.nativeElement.childNodes;
     }
     for (let i = 0; i < nodes.length; ++i) {
       let node: any = nodes[i];
       if (node.nodeType === 3) { // node type 3 is a text node
-        let key: string;
+        let key: string = '';
         if (this.key) {
           key = this.key;
           if (forceUpdate) {

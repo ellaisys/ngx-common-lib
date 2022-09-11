@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 //Boilerplate files
 import { HttpConfiguration, IRequestParam } from '../configurations/http.configuration';
 import { SessionStorageService } from './session-storage.service';
-import { Observable, empty } from 'rxjs';
+import { Observable, empty, Subscriber, Subscription } from 'rxjs';
 import { StorageConfiguration } from '../configurations/storage.configuration';
 import { count } from 'rxjs/operators';
 
@@ -35,7 +35,7 @@ export class HttpService {
 
     constructor(
         private _http: HttpClient
-    ) { this.endpoint = HttpConfiguration.server + HttpConfiguration.apiUrl; }
+    ) { this.endpoint = (HttpConfiguration.server as string) + (HttpConfiguration.apiUrl as string); }
 
 
     /**
@@ -43,17 +43,24 @@ export class HttpService {
      * 
      * @param _data 
      */
-    private getParams(_data: Object): HttpParams {
-        let params: HttpParams=null;
+    private getParams(data: any): HttpParams | null {
+        let params: HttpParams | null;
+        const _data: any = data;
 
         if (_data) {
             params = new HttpParams();
-            Object.keys(_data).forEach((key) => {
-                params = params.append(key, _data[key]);
+            Object.keys(_data).forEach((key: string) => {
+                if (_data.hasOwnProperty(key)) {
+                    if (params) {
+                        params = params.append(key, _data[key]);
+                    } //End if
+                } //End if
             });
-        } //End if
 
-        return params;
+            return params;
+        } else {
+            return null;
+        } //End if
     } //Function ends
 
 
@@ -62,15 +69,19 @@ export class HttpService {
      * 
      * @param uri
      */
-    public async get<T>(_uri: string, _params: Object=null, _encoded:boolean=false, _download:boolean=false) {
-        let options: Object = (_encoded)?_ENCODED_FORM_OPTION:_JSON_HEADER_OPTION;
+    public get<T>(_uri: string, _onlyServerURL: boolean = false, _params: Object | null = null, _encoded: boolean = false, _download: boolean = false): Observable<T> {
+        //Set URL endpoint
+        let url: string = ((_onlyServerURL) ? HttpConfiguration.server : this.endpoint) + _uri;
+
+        //Set Content type option
+        let options: Object | any = (_encoded) ? _ENCODED_FORM_OPTION : _JSON_HEADER_OPTION;
 
         //Add params if exists
         if (_params) {
             if (_params instanceof HttpParams) {
-                options['params'] = _params;
+                options.params = _params;
             } else if (_params instanceof Object) {
-                options['params'] = this.getParams(_params);
+                options.params = this.getParams(_params);
             } else {
                 //Do nothing
             } //End if
@@ -78,12 +89,11 @@ export class HttpService {
 
         //Add download response params
         if (_download) {
-            options['reportProgress'] = true;
-            options['responseType'] = 'blob';
+            options.reportProgress = true;
+            options.responseType = 'blob';
         } //End if
 
-        let url = this.endpoint+_uri;
-        return await this._http.get<T>(url, options).toPromise();
+        return this._http.get<T>(url, (options as Object));
     } //Function ends
 
 
@@ -95,9 +105,9 @@ export class HttpService {
      * @param encoded
      * @param onlyServerURL
      */
-    public async post<T>(_uri: string, _body: any, _onlyServerURL: boolean=false, _params: Object=null, _contentType: ContentType=ContentType.JSON_DATA, _contentTyeCustom: string=null){
+    public post<T>(_uri: string, _body: any, _onlyServerURL: boolean = false, _params: Object | null = null, _contentType: ContentType = ContentType.JSON_DATA, _contentTyeCustom: string | null = null): Observable<T> {
         //Set URL endpoint
-        let url: string = ((_onlyServerURL)?HttpConfiguration.server:this.endpoint) + _uri;
+        let url: string = ((_onlyServerURL) ? HttpConfiguration.server : this.endpoint) + _uri;
 
         //Set Content type option
         let options: Object = this.getContentTypeOptions(_contentType, _contentTyeCustom);
@@ -105,76 +115,76 @@ export class HttpService {
         //Add params if exists
         if (_params) {
             if (_params instanceof HttpParams) {
-                options['params'] = _params;
+                (options as any).params = _params;
             } else if (_params instanceof Object) {
-                options['params'] = this.getParams(_params);
+                (options as any).params = this.getParams(_params);
             } else {
                 //Do nothing
             } //End if
         } //End if
 
-        return await this._http.post<T>(url, _body, options).toPromise();
+        return this._http.post<T>(url, _body, options);
     } //Function ends
 
-    
+
     /**
      * This method PUT the data and body
      * 
      * @param uri 
      * @param body
      */
-    public async put<T>(_uri: string, _body: any, _params: Object=null) {
-        let url = this.endpoint+_uri;
+    public put<T>(_uri: string, _body: any, _params: Object | null = null) {
+        let url = this.endpoint + _uri;
         let options: Object = _JSON_HEADER_OPTION;
 
         //Add params if exists
         if (_params) {
             if (_params instanceof HttpParams) {
-                options['params'] = _params;
+                (options as any).params = _params;
             } else if (_params instanceof Object) {
-                options['params'] = this.getParams(_params);
+                (options as any).params = this.getParams(_params);
             } else {
                 //Do nothing
             } //End if
         } //End if 
 
-        return await this._http.put<T>(url, _body, options).toPromise();
+        return this._http.put<T>(url, _body, options);
     } //Function ends
- 
+
 
     /**
      * This method DELETE the data
      * 
      * @param uri
      */
-    public async delete<T>(_uri: string, _params: Object=null){
-        let url = this.endpoint+_uri;
+    public delete<T>(_uri: string, _params: Object | null = null) {
+        let url = this.endpoint + _uri;
         let options: Object = _JSON_HEADER_OPTION;
 
         //Add params if exists
         if (_params) {
             if (_params instanceof HttpParams) {
-                options['params'] = _params;
+                (options as any).params = _params;
             } else if (_params instanceof Object) {
-                options['params'] = this.getParams(_params);
+                (options as any).params = this.getParams(_params);
             } else {
                 //Do nothing
             } //End if
         } //End if
-        
-        return await this._http.delete<T>(url, options).toPromise();
+
+        return this._http.delete<T>(url, options);
     } //Function ends
 
-    
+
     /**
      * This method PATCH the data
      * 
      * @param uri
      * @param body
      */
-    public async patch<T>(_uri: string, _body: string){
-        let url = this.endpoint+_uri;
-        return await this._http.patch<T>(url, _body);
+    public async patch<T>(_uri: string, _body: string) {
+        let url = this.endpoint + _uri;
+        return this._http.patch<T>(url, _body);
     } //Function ends
 
 
@@ -184,13 +194,13 @@ export class HttpService {
      * @param _contentType 
      * @param _contentTyeCustom 
      */
-    private getContentTypeOptions(_contentType: ContentType=ContentType.JSON_DATA, _contentTyeCustom: string=null): Object {
+    private getContentTypeOptions(_contentType: ContentType = ContentType.JSON_DATA, _contentTyeCustom: string | null = null): Object {
         let objReturnValue: Object;
         try {
             //Configure Options params
             switch (_contentType) {
                 case ContentType.NOTHING:
-                    objReturnValue={};
+                    objReturnValue = {};
                     break;
                 case ContentType.ENCODED_FORM_DATA:
                     objReturnValue = _ENCODED_FORM_OPTION;
@@ -200,7 +210,7 @@ export class HttpService {
                     objReturnValue = _MULTIPART_MIXED_OPTION;
                     break;
                 case ContentType.CUSTOM:
-                    objReturnValue = { headers: new HttpHeaders().append('Content-Type', _contentTyeCustom) };
+                    objReturnValue = { headers: new HttpHeaders().append('Content-Type', (_contentTyeCustom as string)) };
                     break;
                 case ContentType.JSON_DATA:
                 default:
@@ -208,7 +218,7 @@ export class HttpService {
                     break;
             } //End switch
         } catch (error) {
-            objReturnValue={};
+            objReturnValue = {};
         } //Try-catch ends
         return objReturnValue;
     } //Function ends
@@ -226,13 +236,13 @@ export class RequestInterceptor implements HttpInterceptor {
         const _HEADER_TOKEN_KEY: string = HttpConfiguration.headers.token_key;
         const _HEADER_TOKEN_BEARER: string = HttpConfiguration.headers.token_bearer;
 
-        let claim: any = this._session.getItem(StorageConfiguration.SESSION_AUTH_CLAIM_KEY);
+        let claim: any = this._session.getItem(StorageConfiguration.SESSION_AUTH_CLAIM_KEY as string);
         //console.log("Result",claim);
 
-        if (claim!=null) {
+        if (claim != null) {
             let _AUTH_TOKEN: string = claim.token;
 
-            let boolNeedsAuthentication: boolean = !(req.url.search('googleapis.com')>0);
+            let boolNeedsAuthentication: boolean = !(req.url.search('googleapis.com') > 0);
             if (boolNeedsAuthentication) {
                 // if (!req.headers.has('Content-Type')) {
                 //     req = req.clone({ 
@@ -241,8 +251,8 @@ export class RequestInterceptor implements HttpInterceptor {
                 // } //End if
 
                 if (_AUTH_TOKEN) {
-                    req = req.clone({ 
-                        headers: req.headers.set(_HEADER_TOKEN_KEY, _HEADER_TOKEN_BEARER.replace('{token}',_AUTH_TOKEN))
+                    req = req.clone({
+                        headers: req.headers.set(_HEADER_TOKEN_KEY, _HEADER_TOKEN_BEARER.replace('{token}', _AUTH_TOKEN))
                     });
                 } //End if
 
@@ -251,8 +261,8 @@ export class RequestInterceptor implements HttpInterceptor {
         } //End if
 
         //Set Params in the request
-        let params: IRequestParam[] = HttpConfiguration.request.params;
-        if (params && params instanceof Array && params.length>0) {
+        let params: IRequestParam[] | undefined = HttpConfiguration.request?.params;
+        if (params && params instanceof Array && params.length > 0) {
 
             for (let index = 0; index < params.length; index++) {
                 let param: IRequestParam = params[index];

@@ -1,4 +1,5 @@
 import * as lpn from 'google-libphonenumber';
+import { empty, isNull } from '../pipe/utils/utils';
 
 /*
 We use "control: any" instead of "control: FormControl" to silence:
@@ -15,8 +16,8 @@ export const phoneNumberValidator = (control: any) => {
 	}
 	// Find <input> inside injected nativeElement and get its "id".
 	const el: HTMLElement = control.nativeElement as HTMLElement;
-	const inputBox: HTMLInputElement = el
-		? el.querySelector('input[type="tel"]')
+	const inputBox: HTMLInputElement | undefined | null = el
+		? (el.querySelector('input[type="tel"]') as HTMLInputElement | null)
 		: undefined;
 	if (inputBox) {
 		const id = inputBox.id;
@@ -34,28 +35,28 @@ export const phoneNumberValidator = (control: any) => {
 					control.value.number,
 					control.value.countryCode
 				);
+
+				if (control.value) {
+					if (!number) {
+						return error;
+					} else {
+						if (
+							!lpn.PhoneNumberUtil.getInstance().isValidNumberForRegion(
+								number,
+								control.value.countryCode
+							)
+						) {
+							return error;
+						} else {
+							inputBox.setCustomValidity('');
+						}
+					}
+				}				
 			} catch (e) {
 				if (isRequired === true) {
 					return error;
 				} else {
 					inputBox.setCustomValidity('');
-				}
-			}
-
-			if (control.value) {
-				if (!number) {
-					return error;
-				} else {
-					if (
-						!lpn.PhoneNumberUtil.getInstance().isValidNumberForRegion(
-							number,
-							control.value.countryCode
-						)
-					) {
-						return error;
-					} else {
-						inputBox.setCustomValidity('');
-					}
 				}
 			}
 		} else if (isCheckValidation === 'false') {

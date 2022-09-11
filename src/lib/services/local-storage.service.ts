@@ -8,7 +8,7 @@ export class LocalStorageService {
 
     //Default Constructor
     constructor() {
-        this._LOCAL_STORAGE_APP_PREFIX = StorageConfiguration.STORAGE_KEY;
+        this._LOCAL_STORAGE_APP_PREFIX = StorageConfiguration.STORAGE_KEY as string;
         this._storage = localStorage;
     } //Function ends
 
@@ -48,7 +48,7 @@ export class LocalStorageService {
      * @param key 
      */
     public getItem(key: string): any {
-        return JSON.parse(this._storage.getItem(`${this._LOCAL_STORAGE_APP_PREFIX}${key}`));
+        return JSON.parse(this._storage.getItem(`${this._LOCAL_STORAGE_APP_PREFIX}${key}`) as string);
     } //Function ends
 
 } //Class ends

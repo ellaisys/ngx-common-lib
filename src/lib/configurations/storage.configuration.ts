@@ -6,9 +6,9 @@ import { Injectable, Inject } from '@angular/core';
 export class StorageConfiguration {
     private storageConfig: any = null;
 
-    public static STORAGE_KEY: string = null;
-    public static SESSION_AUTH_CLAIM_KEY: string = null;
-    public static LOCAL_STORAGE_AUTH_CREDENTIALS: string = null;
+    public static STORAGE_KEY: string | null = null;
+    public static SESSION_AUTH_CLAIM_KEY: string | null = null;
+    public static LOCAL_STORAGE_AUTH_CREDENTIALS: string | null = null;
 
     
     //Default constructor
@@ -28,7 +28,7 @@ export class StorageConfiguration {
 
         //Dubug to console
         if (this._environment && (this._environment.production==false)) {
-            console.debug('ngx-common-lib->StorageConfiguration->storageConfig:');
+            console.debug('bondai-core-lib->StorageConfiguration->storageConfig:');
             console.debug(storageConfig);
         } //End if
 

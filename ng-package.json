@@ -2,11 +2,6 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/ngx-common-lib",
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdModuleIds": {
-      "google-libphonenumber": "lpn",
-      "ngx-bootstrap/dropdown": "dropdown",
-      "ngx-bootstrap/tooltip": "tooltip"
-    }
+    "entryFile": "src/public-api.ts"
   }
 }

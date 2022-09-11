@@ -112,17 +112,17 @@ import {NotificationService} from '../../services/notification.service';
 
 export class NotificationComponent implements OnInit, OnDestroy {
 
-  @Input() public timeOut: number;
-  @Input() public showProgressBar: boolean;
-  @Input() public pauseOnHover: boolean;
-  @Input() public clickToClose: boolean;
-  @Input() public clickIconToClose: boolean;
-  @Input() public maxLength: number;
-  @Input() public theClass: string;
-  @Input() public rtl: boolean;
-  @Input() public animate: string;
-  @Input() public position: number;
-  @Input() public item: Notification;
+  @Input() public timeOut: number = 0;
+  @Input() public showProgressBar?: boolean;
+  @Input() public pauseOnHover?: boolean;
+  @Input() public clickToClose?: boolean;
+  @Input() public clickIconToClose?: boolean;
+  @Input() public maxLength?: number;
+  @Input() public theClass?: string;
+  @Input() public rtl?: boolean;
+  @Input() public animate?: string;
+  @Input() public position?: number;
+  @Input() public item?: Notification;
 
   // Progress bar variables
   public title: any;
@@ -133,17 +133,17 @@ export class NotificationComponent implements OnInit, OnDestroy {
   public htmlIsTemplate = false;
 
   public progressWidth = 0;
-  public safeSvg: SafeHtml;
+  public safeSvg?: SafeHtml;
 
   private stopTime = false;
   private timer: any;
-  private steps: number;
-  private speed: number;
+  private steps: number = 0;
+  private speed: number = 0;
   private count = 0;
   private start: any;
 
-  private diff: any;
-  private icon: string;
+  private diff?: any;
+  private icon?: string;
 
   constructor(
     private notificationService: NotificationService,
@@ -153,27 +153,27 @@ export class NotificationComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (this.item.override) {
+    if ((this.item as Notification).override) {
       this.attachOverrides();
     }
 
     if (this.animate) {
-      this.item.state = this.animate;
+      (this.item as Notification).state = this.animate;
     }
 
     if (this.timeOut !== 0) {
       this.startTimeOut();
     }
 
-    this.contentType(this.item.title, 'title');
-    this.contentType(this.item.content, 'content');
-    this.contentType(this.item.html, 'html');
+    this.contentType((this.item as Notification).title, 'title');
+    this.contentType((this.item as Notification), 'content');
+    this.contentType((this.item as Notification), 'html');
 
-    this.safeSvg = this.domSanitizer.bypassSecurityTrustHtml(this.icon || this.item.icon);
+    this.safeSvg = this.domSanitizer.bypassSecurityTrustHtml(this.icon || (this.item as Notification).icon);
   }
 
   startTimeOut(): void {
-    this.steps = this.timeOut / 10;
+    this.steps = (this.timeOut) / 10;
     this.speed = this.timeOut / this.steps;
     this.start = new Date().getTime();
     this.zone.runOutsideAngular(() => this.timer = setTimeout(this.instance, this.speed));
@@ -193,7 +193,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
   }
 
   onClick($e: MouseEvent): void {
-    this.item.click!.emit($e);
+    (this.item as Notification).click!.emit($e);
 
     if (this.clickToClose) {
       this.remove();
@@ -201,7 +201,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
   }
 
   onClickIcon($e: MouseEvent): void {
-    this.item.clickIcon!.emit($e);
+    (this.item as Notification).clickIcon!.emit($e);
 
     if (this.clickIconToClose) {
       this.remove();
@@ -210,9 +210,9 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   // Attach all the overrides
   attachOverrides(): void {
-    Object.keys(this.item.override).forEach(a => {
+    Object.keys((this.item as Notification).override).forEach(a => {
       if (this.hasOwnProperty(a)) {
-        (<any>this)[a] = this.item.override[a];
+        (<any>this)[a] = (this.item as Notification).override[a];
       }
     });
   }
@@ -226,7 +226,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
     if (this.count++ === this.steps) {
       this.remove();
-      this.item.timeoutEnd!.emit();
+      (this.item as Notification).timeoutEnd!.emit();
     } else if (!this.stopTime) {
       if (this.showProgressBar) {
         this.progressWidth += 100 / this.steps;
@@ -239,22 +239,22 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   private remove() {
     if (this.animate) {
-      this.item.state = this.animate + 'Out';
+      (this.item as Notification).state = this.animate + 'Out';
       setTimeout(() => {
-        this.notificationService.set(this.item, false);
+        this.notificationService.set((this.item as Notification), false);
       }, 310);
     } else {
-      this.notificationService.set(this.item, false);
+      this.notificationService.set((this.item as Notification), false);
     }
   }
 
   private contentType(item: any, key: string) {
     if (item instanceof TemplateRef) {
-      this[key] = item;
+      (this as any)[key] = item;
     } else {
-      this[key] = this.domSanitizer.bypassSecurityTrustHtml(item);
+      (this as any)[key] = this.domSanitizer.bypassSecurityTrustHtml(item);
     }
 
-    this[key + 'IsTemplate'] = item instanceof TemplateRef;
+    (this as any)[key + 'IsTemplate'] = item instanceof TemplateRef;
   }
 }

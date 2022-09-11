@@ -52,29 +52,29 @@
     </div>
 </div> -->
 
-<div class="alert notification-alert animate__animated animate__bounce" role="alert"
+<div class="alert alertBlock alert-dismissible notification-alert d-block align-items-center 
+    animate__animated animate__bounce" role="alert"
     [ngClass]="{
-        'alert-default': item.type === 'alert',
-        'alert-danger': item.type === 'error',
-        'alert-warning': item.type === 'warn',
-        'alert-success': item.type === 'success',
-        'alert-normal': item.type === 'info',
-        'bare': item.type === 'bare',
+        'alert-default': item?.type === 'alert',
+        'alert-danger': item?.type === 'error',
+        'alert-warning': item?.type === 'warn',
+        'alert-success': item?.type === 'success',
+        'alert-normal': item?.type === 'info',
+        'bare': item?.type === 'bare',
         'rtl-mode': rtl
     }"
     (click)="onClick($event)"
     (mouseenter)="onEnter()"
     (mouseleave)="onLeave()"
-    *ngIf="!item.html">
+    *ngIf="!item?.html">
     
-    <button type="button" class="close" data-dismiss="dismiss" aria-label="Close">
-        <img src="assets/images/notifications/alert-close.png" />
+    <button type="button" class="close btn-close" data-bs-dismiss="alert" data-dismiss="dismiss" aria-label="Close">
     </button>
 
-    <p class="cal-heading">
-        <span class="icon" *ngIf="item.icon !== 'bare'" [innerHTML]="safeSvg"></span>
-        {{item.title}}
+    <p class="cal-heading alert alert-heading p-0">
+        <!-- <span class="icon" *ngIf="item?.icon !== 'bare'" [innerHTML]="safeSvg"></span> -->
+        {{item?.title}}
     </p>
 
-    <p class="cal-name">{{item.content}}</p>
+    <p class="cal-name alert alert-content p-0">{{item?.content}}</p>
 </div>
