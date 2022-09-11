@@ -1,16 +1,16 @@
 
-# EllaiSys Angular Library for Rapid Development
+# EllaiSys Angular Commons Library for Rapid Development
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version **11.1.4**
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version **14.2.0**
 
 ## Requirements
-- Node 10.15.3
-- Typescript 4.1.4
+- Node 16.17.0
+- Typescript 4.7.2
 
 ## Code scaffolding
 Execute this to generate a new component
 ```sh
-ng generate component component-name --project ellaisys-lib
+ng generate component component-name --project commons-lib
 ``` 
 To generate a new component. You can also use 
 ```sh
