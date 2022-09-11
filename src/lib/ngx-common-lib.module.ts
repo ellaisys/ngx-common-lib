@@ -6,7 +6,7 @@ import { HttpConfiguration } from './configurations/http.configuration';
 import { StorageConfiguration } from './configurations/storage.configuration';
 
 //Library Component
-import { EllaisysLibComponent } from './ellaisys-lib.component';
+import { NgxCommonLibComponent } from './ngx-common-lib.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { ReadMoreComponent } from './components/readmore/readmore.component';
 
@@ -44,7 +44,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     
     //Components
-    EllaisysLibComponent,
+    NgxCommonLibComponent,
     LoaderComponent,
     ReadMoreComponent,
   ],
@@ -65,7 +65,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ValidatorModule,
   ],
   exports: [
-    EllaisysLibComponent,
+    NgxCommonLibComponent,
 
     //Boilerplate Modules
     TranslateModule,
@@ -96,7 +96,7 @@ export class EllaisysLibModule {
     let environment: any = _environment?.env;
 
     if ((!environment.production) && environment.logs) {
-      console.log('ellaisys-lib.environment', environment);
+      console.log('ngx-common-lib.environment', environment);
     } //End if
     
     return {

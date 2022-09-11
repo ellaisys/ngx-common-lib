@@ -28,7 +28,7 @@ export class StorageConfiguration {
 
         //Dubug to console
         if (this._environment && (this._environment.production==false)) {
-            console.debug('ellaisys-lib->StorageConfiguration->storageConfig:');
+            console.debug('ngx-common-lib->StorageConfiguration->storageConfig:');
             console.debug(storageConfig);
         } //End if
 

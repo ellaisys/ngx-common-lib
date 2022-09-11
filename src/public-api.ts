@@ -1,10 +1,10 @@
 /*
- * Public API Surface of ellaisys-lib
+ * Public API Surface of ngx-common-lib
  */
 
-export * from './lib/ellaisys-lib.service';
-export * from './lib/ellaisys-lib.component';
-export * from './lib/ellaisys-lib.module';
+export * from './lib/ngx-common-lib.service';
+export * from './lib/ngx-common-lib.component';
+export * from './lib/ngx-common-lib.module';
 
 //Exporting ellaisys library services
 export * from './lib/services/loader.service';

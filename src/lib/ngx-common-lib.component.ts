@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'eis-lib-ellaisys-lib',
+  selector: 'ngx-common-lib',
   template: `
     <p>
-      ellaisys-lib works!
+      ngx-common-lib works!
     </p>
   `,
   styles: [
   ]
 })
-export class EllaisysLibComponent implements OnInit {
+export class NgxCommonLibComponent implements OnInit {
 
   constructor() { }
 

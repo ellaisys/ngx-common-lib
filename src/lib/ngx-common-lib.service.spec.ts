@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EllaisysLibService } from './ellaisys-lib.service';
+import { EllaisysLibService } from './ngx-common-lib.service';
 
 describe('EllaisysLibService', () => {
   let service: EllaisysLibService;

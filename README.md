@@ -14,23 +14,23 @@ ng generate component component-name --project commons-lib
 ``` 
 To generate a new component. You can also use 
 ```sh
-ng generate directive|pipe|service|class|guard|interface|enum|module --project ellaisys-lib
+ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-common-lib
 ```
-> Note: Don't forget to add `--project ellaisys-lib` or else it will be added to the default project in your `angular.json` file. 
+> Note: Don't forget to add `--project ngx-common-lib` or else it will be added to the default project in your `angular.json` file. 
 
 ## Build
 For **production build** the project. The build artifacts will be stored in the `dist/` directory.
 ```sh
-ng build ellaisys-lib --prod
+ng build ngx-common-lib --prod
 ```
 To make a debug build, remove the **`--prod`** switch from the above command.
 
 ## Publishing
-After building your library with `ng build ellaisys-lib`, go to the dist folder `cd dist/ellaisys-lib` and run `npm publish`.
+After building your library with `ng build ngx-common-lib`, go to the dist folder `cd dist/ngx-common-lib` and run `npm publish`.
 
 ## Running unit tests
 
-Run `ng test ellaisys-lib` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test ngx-common-lib` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Further help
 

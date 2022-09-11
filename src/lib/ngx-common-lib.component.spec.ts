@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { EllaisysLibComponent } from './ellaisys-lib.component';
+import { EllaisysLibComponent } from './ngx-common-lib.component';
 
 describe('EllaisysLibComponent', () => {
   let component: EllaisysLibComponent;
