@@ -17,6 +17,9 @@ import { TOKEN_LOGGER_SERVER_SERVICE } from './server/iserver.service';
 import { NGXLoggerConfigEngineFactory } from './config/config-engine-factory';
 import { TOKEN_LOGGER_CONFIG_ENGINE_FACTORY } from './config/iconfig-engine-factory';
 
+export * from './logger.service';
+export * from './types/logger-level.enum';
+
 @NgModule({
   imports: [
     CommonModule
