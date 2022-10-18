@@ -4,9 +4,8 @@ import { Injectable } from '@angular/core';
 //Boilerplate files
 import { HttpConfiguration, IRequestParam } from '../configurations/http.configuration';
 import { SessionStorageService } from './session-storage.service';
-import { Observable, empty, Subscriber, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { StorageConfiguration } from '../configurations/storage.configuration';
-import { count } from 'rxjs/operators';
 
 export enum ContentType {
     NOTHING = "_NOTHING OPTION",
@@ -33,9 +32,15 @@ const _MULTIPART_MIXED_OPTION = {
 export class HttpService {
     private endpoint: string | null;
 
+
+    /**
+     * Default constructor
+     */
     constructor(
         private _http: HttpClient
-    ) { this.endpoint = (HttpConfiguration.server as string) + (HttpConfiguration.apiUrl as string); }
+    ) { 
+        this.endpoint = (HttpConfiguration.server as string) + (HttpConfiguration.apiUrl as string); 
+    }
 
 
     /**
@@ -228,6 +233,10 @@ export class HttpService {
 
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor {
+
+    /**
+     * Default constructor
+     */
     constructor(
         private _session: SessionStorageService,
     ) { }
