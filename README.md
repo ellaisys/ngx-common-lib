@@ -1,10 +1,11 @@
 
 # EllaiSys Angular Commons Library for Rapid Development
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version **14.2.0**
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version **16.2.0**
 
 ## Requirements
-- Node 16.17.0
+- Node 18.17.1
+- NPM: 9.6.7
 - Typescript 4.7.2
 
 ## Code scaffolding
