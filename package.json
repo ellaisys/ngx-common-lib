@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^16.2.0",
-    "@angular/core": "^16.2.0"
+    "@angular/core": "^16.2.0",
+    "@types/google-libphonenumber": "^7.4.25",
+    "ngx-bootstrap": "^11.0.2",
+    "vlq": "^2.0.4"
   },
   "dependencies": {
     "tslib": "^2.3.0"
