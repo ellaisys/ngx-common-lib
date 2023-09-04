@@ -1,5 +1,17 @@
 
-# EllaiSys Angular Commons Library for Rapid Development
+<img src="./assets/images/banner.png" width="100%" alt="Angular Commons Library for Rapid Development"/>
+
+# Angular Commons Library for Rapid Development
+
+[![Release Version](https://img.shields.io/packagist/v/ellaisys/ngx-common-lib?style=flat-square&logo=packagist&logoColor=whitesmoke&label=Release&nbsp;Version)](https://packagist.org/packages/ellaisys/ngx-common-lib#v1.1.3)&#160;
+[![Release Date](https://img.shields.io/github/release-date/ellaisys/ngx-common-lib?style=flat-square&logo=packagist&logoColor=whitesmoke&label=Release&nbsp;Date)](https://packagist.org/packages/ellaisys/ngx-common-lib)&#160;
+[![Total Downloads](https://img.shields.io/packagist/dt/ellaisys/ngx-common-lib?style=flat-square&logo=packagist&logoColor=whitesmoke&label=Downloads)](https://packagist.org/packages/ellaisys/ngx-common-lib)&#160;
+
+![Github Stars](https://img.shields.io/github/stars/ellaisys/ngx-common-lib?style=flat-square&logo=github&logoColor=whitesmoke&label=Stars)&#160;
+![Github Forks](https://img.shields.io/github/forks/ellaisys/ngx-common-lib?style=flat-square&logo=github&logoColor=whitesmoke&label=Forks)&#160;
+[![GitHub Contributors](https://img.shields.io/github/contributors-anon/ellaisys/ngx-common-lib?style=flat&logo=github&logoColor=whitesmoke&label=Contributors)](CONTRIBUTING.md)&#160;
+[![APM](https://img.shields.io/packagist/l/ellaisys/ngx-common-lib?style=flat-square&logo=github&logoColor=whitesmoke&label=License)](LICENSE.md)
+
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version **16.2.0**
 
@@ -22,9 +34,9 @@ ng generate directive|pipe|service|class|guard|interface|enum|module --project n
 ## Build
 For **production build** the project. The build artifacts will be stored in the `dist/` directory.
 ```sh
-ng build ngx-common-lib --prod
+ng build ngx-common-lib
 ```
-To make a debug build, remove the **`--prod`** switch from the above command.
+To make a debug build, add the **`--watch`** switch from the above command.
 
 ## Publishing
 After building your library with `ng build ngx-common-lib`, go to the dist folder `cd dist/ngx-common-lib` and run `npm publish`.
@@ -35,4 +47,4 @@ Run `ng test ngx-common-lib` to execute the unit tests via [Karma](https://karma
 
 ## Further help
 
-Write to [EllaiSys Support Email](support@ellaisys.com)
+Write to [Support Email](support@ellaisys.com)
