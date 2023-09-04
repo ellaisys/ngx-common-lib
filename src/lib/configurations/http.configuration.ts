@@ -6,12 +6,12 @@ import { Injectable, Inject } from '@angular/core';
 })
 export class HttpConfiguration {
     private httpConfig: any = null;
-    private dynamicServerHost: string | null;
+    private dynamicServerHost: string | null = null;
 
     //Http API Endpoint & configurations
-    public static server: string = null;
-    public static apiUrl: string = null;
-    public static title: string  = null;
+    public static server: string | null = null;
+    public static apiUrl: string | null = null;
+    public static title: string | null  = null;
 
     //Http Header for Authorization Token
     public static headers: any = {
@@ -20,7 +20,7 @@ export class HttpConfiguration {
     };
 
     //HTTP Params
-    public static request: IRequest = null;
+    public static request: IRequest | null = null;
 
     //Default constructor
     constructor(

@@ -26,8 +26,8 @@ export class SimpleNotificationsComponent implements OnInit, OnDestroy {
   public notifications: Notification[] = [];
   public position: ['top' | 'bottom' | 'middle', 'right' | 'left' | 'center'] = ['bottom', 'right'];
 
-  private lastNotificationCreated: Notification;
-  private listener: Subscription;
+  private lastNotificationCreated?: Notification;
+  private listener?: Subscription;
 
   // Received values
   private lastOnBottom = true;
@@ -199,7 +199,7 @@ export class SimpleNotificationsComponent implements OnInit, OnDestroy {
   cleanSingle(id: string): void {
     let indexOfDelete = 0;
     let doDelete = false;
-    let noti;
+    let noti: any = null;
 
     this.notifications.forEach((notification, idx) => {
       if (notification.id === id) {

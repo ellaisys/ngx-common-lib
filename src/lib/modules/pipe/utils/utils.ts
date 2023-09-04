@@ -291,7 +291,3 @@ export function takeUntil(input: any[], predicate: CollectionPredicate) {
 
   return result;
 }
-
-export function takeWhile(input: any[], predicate: CollectionPredicate) {
-  return takeUntil(input, (item: any, index: number, collection: any[]) => !predicate(item, index, collection));
-}

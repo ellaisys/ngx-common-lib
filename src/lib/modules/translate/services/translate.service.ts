@@ -35,13 +35,13 @@ declare const window: Window;
 
 @Injectable()
 export class TranslateService {
-  private loadingTranslations: Observable<any>;
+  private loadingTranslations: Observable<any> | undefined;
   private pending: boolean = false;
   private _onTranslationChange: EventEmitter<TranslationChangeEvent> = new EventEmitter<TranslationChangeEvent>();
   private _onLangChange: EventEmitter<LangChangeEvent> = new EventEmitter<LangChangeEvent>();
   private _onDefaultLangChange: EventEmitter<DefaultLangChangeEvent> = new EventEmitter<DefaultLangChangeEvent>();
-  private _defaultLang: string;
-  private _currentLang: string;
+  private _defaultLang: string | undefined;
+  private _currentLang: string | undefined;
   private _langs: Array<string> = [];
   private _translations: any = {};
   private _translationRequests: any = {};
@@ -80,7 +80,7 @@ export class TranslateService {
    * The default lang to fallback when translations are missing on the current lang
    */
   get defaultLang(): string {
-    return this.isolate ? this._defaultLang : this.store.defaultLang;
+    return this.isolate ? (this._defaultLang as string) : (this.store.defaultLang as string);
   }
 
   set defaultLang(defaultLang: string) {
@@ -95,7 +95,7 @@ export class TranslateService {
    * The lang currently used
    */
   get currentLang(): string {
-    return this.isolate ? this._currentLang : this.store.currentLang;
+    return this.isolate ? (this._currentLang as string) : (this.store.currentLang as string);
   }
 
   set currentLang(currentLang: string) {
@@ -227,6 +227,8 @@ export class TranslateService {
     if (typeof this.translations[lang] === "undefined") {
       this._translationRequests[lang] = this._translationRequests[lang] || this.getTranslation(lang);
       pending = this._translationRequests[lang];
+    } else {
+      pending = new Observable;
     }
 
     return pending;
@@ -301,7 +303,7 @@ export class TranslateService {
    * Returns the parsed result of the translations
    */
   public getParsedResult(translations: any, key: any, interpolateParams?: Object): any {
-    let res: string | Observable<string>;
+    let res: string | Observable<string> | undefined;
 
     if (key instanceof Array) {
       let result: any = {},
@@ -313,16 +315,17 @@ export class TranslateService {
         }
       }
       if (observables) {
-        let mergedObs: Observable<string>;
+        let mergedObs: Observable<string> | undefined;
         for (let k of key) {
           let obs = typeof result[k].subscribe === "function" ? result[k] : of(result[k] as string);
           if (typeof mergedObs === "undefined") {
             mergedObs = obs;
           } else {
-            mergedObs = merge(mergedObs, obs);
+            mergedObs = merge(mergedObs, obs) as Observable<string>;
           }
-        }
-        return mergedObs.pipe(
+        } //Loop ends
+
+        return (mergedObs as Observable<string>).pipe(
           toArray(),
           map((arr: Array<string>) => {
             let obj: any = {};
@@ -365,7 +368,7 @@ export class TranslateService {
     }
     // check if we are loading a new translation to use
     if (this.pending) {
-      return Observable.create((observer: Observer<string>) => {
+      return new Observable((observer: Observer<string>) => {
         let onComplete = (res: string) => {
           observer.next(res);
           observer.complete();
@@ -373,7 +376,7 @@ export class TranslateService {
         let onError = (err: any) => {
           observer.error(err);
         };
-        this.loadingTranslations.subscribe((res: any) => {
+        (this.loadingTranslations as Observable<any>).subscribe((res: any) => {
           res = this.getParsedResult(res, key, interpolateParams);
           if (typeof res.subscribe === "function") {
             res.subscribe(onComplete, onError);
@@ -489,7 +492,7 @@ export class TranslateService {
   /**
    * Returns the language code name from the browser, e.g. "de"
    */
-  public getBrowserLang(): string {
+  public getBrowserLang(): string | undefined {
     if (typeof window === 'undefined' || typeof window.navigator === 'undefined') {
       return undefined;
     }
@@ -511,7 +514,7 @@ export class TranslateService {
   /**
    * Returns the culture language code name from the browser, e.g. "de-DE"
    */
-  public getBrowserCultureLang(): string {
+  public getBrowserCultureLang(): string | undefined {
     if (typeof window === 'undefined' || typeof window.navigator === 'undefined') {
       return undefined;
     }

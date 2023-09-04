@@ -47,7 +47,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 	@Input() value = '';
 	@Input() preferredCountries: Array<string> = [];
 	@Input() enablePlaceholder = true;
-	@Input('customPlaceholderText') customPlaceholderText: string = null;
+	@Input('customPlaceholderText') customPlaceholderText: string | null = null;
 	@Input() cssClass = 'form-control';
 	@Input() onlyCountries: Array<string> = [];
 	@Input() enableAutoCountrySelect = true;
@@ -55,19 +55,19 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 	@Input() searchCountryField: SearchCountryField[] = [SearchCountryField.All];
 	@Input() searchCountryPlaceholder = 'Search Country';
 	@Input() maxLength = '';
-	@Input() tooltipField: TooltipLabel;
+	@Input() tooltipField: TooltipLabel = TooltipLabel.Name;
 	@Input() selectFirstCountry = true;
-	@Input() selectedCountryISO: CountryISO|string;
+	@Input() selectedCountryISO: CountryISO | string | undefined;
 	@Input() phoneValidation = true;
 	@Input() inputId = 'phone';
 	@Input() separateDialCode = true;
 	@Input() tabIndex: number = 1;
 	@Input() enableAutoComplete: boolean = false;
-	separateDialCodeClass: string;
+	separateDialCodeClass: string = '';
 
 	@Output() readonly countryChange = new EventEmitter<Country>();
 
-	selectedCountry: Country = {
+	selectedCountry: Country | any = {
 		areaCodes: undefined,
 		dialCode: '',
 		htmlId: '',
@@ -87,10 +87,10 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 	errors: Array<any> = ['Phone number is required.'];
 	countrySearchText = '';
 
-	@ViewChild('countryList') countryList: ElementRef;
+	@ViewChild('countryList') countryList: ElementRef | undefined;
 
 	onTouched = () => {};
-	propagateChange = (_: ChangeData) => {};
+	propagateChange = (_: ChangeData | null) => {};
 
 	constructor(private countryCodeData: CountryCode) {}
 
@@ -107,7 +107,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 		) {
 			this.getSelectedCountry();
 		}
-		if (changes.preferredCountries) {
+		if (changes['preferredCountries']) {
 			this.getPreferredCountries();
 		}
 		this.checkSeparateDialCodeStyle();
@@ -153,8 +153,8 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 
 	getSelectedCountry() {
 		if (this.selectedCountryISO) {
-			this.selectedCountry = this.allCountries.find((c) => {
-				return c.iso2.toLowerCase() === this.selectedCountryISO.toLowerCase();
+			this.selectedCountry = this.allCountries.find((c: Country) => {
+				return c.iso2.toLowerCase() === (this.selectedCountryISO as string).toLowerCase();
 			});
 			if (this.selectedCountry) {
 				if (this.phoneNumber) {
@@ -178,7 +178,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 	 */
 	fnSearchCountry() {
 		if (!this.countrySearchText) {
-			this.countryList.nativeElement
+			(this.countryList as ElementRef).nativeElement
 				.querySelector('.iti__country-list li')
 				.scrollIntoView({
 					behavior: 'smooth',
@@ -221,7 +221,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 		});
 
 		if (country.length > 0) {
-			const el = this.countryList.nativeElement.querySelector(
+			const el = (this.countryList as ElementRef).nativeElement.querySelector(
 				'#' + country[0].htmlId
 			);
 			if (el) {
@@ -237,28 +237,31 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 	} //Function ends
 
 	public onPhoneNumberChange(): void {
-		let countryCode: string | undefined;
+		let countryCode: string;
 		// Handle the case where the user sets the value programatically based on a persisted ChangeData obj.
 		if (this.phoneNumber && typeof this.phoneNumber === 'object') {
 			const numberObj: ChangeData = this.phoneNumber;
-			this.phoneNumber = numberObj.number;
-			countryCode = numberObj.countryCode;
+			this.phoneNumber = (numberObj.number as string);
+			countryCode = (numberObj.countryCode as string);
+		} else {
+			countryCode = (this.selectedCountry?.iso2.toUpperCase() as string);
 		}
 
 		this.value = this.phoneNumber;
-		countryCode = countryCode || this.selectedCountry.iso2.toUpperCase();
-		let number: lpn.PhoneNumber;
+		let number: lpn.PhoneNumber | null;
 		try {
 			number = this.phoneUtil.parse(this.phoneNumber, countryCode);
-		} catch (e) {}
+		} catch (e) {
+			number = null;
+		}
 
 		// auto select country based on the extension (and areaCode if needed) (e.g select Canada if number starts with +1 416)
 		if (this.enableAutoCountrySelect) {
 			countryCode =
 				number && number.getCountryCode()
-					? this.getCountryIsoCode(number.getCountryCode(), number)
-					: this.selectedCountry.iso2;
-			if (countryCode && countryCode !== this.selectedCountry.iso2) {
+					? (this.getCountryIsoCode((number.getCountryCode() as number), number) as string)
+					: (this.selectedCountry?.iso2 as string);
+			if (countryCode && countryCode !== this.selectedCountry?.iso2) {
 				const newCountry = this.allCountries.sort((a, b) => {
 					return a.priority - b.priority;
 				}).find(
@@ -269,7 +272,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 				}
 			}
 		}
-		countryCode = countryCode ? countryCode : this.selectedCountry.iso2;
+		countryCode = countryCode ? countryCode : (this.selectedCountry?.iso2 as string);
 
 		this.checkSeparateDialCodeStyle();
 
@@ -296,14 +299,14 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 				e164Number: number
 					? this.phoneUtil.format(number, lpn.PhoneNumberFormat.E164)
 					: '',
-				countryCode: countryCode.toUpperCase(),
-				dialCode: '+' + this.selectedCountry.dialCode,
-				iddCode: this.selectedCountry.dialCode,
+				countryCode: countryCode?.toUpperCase(),
+				dialCode: '+' + this.selectedCountry?.dialCode,
+				iddCode: this.selectedCountry?.dialCode,
 			});
 		}
 	}
 
-	public onCountrySelect(country: Country, el): void {
+	public onCountrySelect(country: Country, el: any): void {
 		this.setSelectedCountry(country);
 
 		this.checkSeparateDialCodeStyle();
@@ -312,16 +315,19 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 			this.value = this.phoneNumber;
 
 			let number: lpn.PhoneNumber;
+			let intlNo : any = 0;
 			try {
 				number = this.phoneUtil.parse(
 					this.phoneNumber,
-					this.selectedCountry.iso2.toUpperCase()
+					this.selectedCountry?.iso2.toUpperCase()
 				);
-			} catch (e) {}
 
-			const intlNo = number
-				? this.phoneUtil.format(number, lpn.PhoneNumberFormat.INTERNATIONAL)
-				: '';
+				const intlNo = number
+					? this.phoneUtil.format(number, lpn.PhoneNumberFormat.INTERNATIONAL)
+					: '';				
+			} catch (e) {
+				number = this.phoneUtil();
+			}
 
 			// parse phoneNumber if separate dial code is needed
 			if (this.separateDialCode && intlNo) {
@@ -337,9 +343,9 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 				e164Number: number
 					? this.phoneUtil.format(number, lpn.PhoneNumberFormat.E164)
 					: '',
-				countryCode: this.selectedCountry.iso2.toUpperCase(),
-				dialCode: '+' + this.selectedCountry.dialCode,
-				iddCode: this.selectedCountry.dialCode,
+				countryCode: this.selectedCountry?.iso2.toUpperCase(),
+				dialCode: '+' + this.selectedCountry?.dialCode,
+				iddCode: this.selectedCountry?.dialCode,
 			});
 		} else {
 			// Reason: avoid https://stackoverflow.com/a/54358133/1617590
@@ -400,13 +406,13 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 		});
 	}
 
-	protected getPhoneNumberPlaceHolder(countryCode: string): string {
+	protected getPhoneNumberPlaceHolder(countryCode: string): string | any {
 		try {
 			return this.phoneUtil.format(
 				this.phoneUtil.getExampleNumber(countryCode),
 				lpn.PhoneNumberFormat.INTERNATIONAL
 			);
-		} catch (e) {
+		} catch (e: any) {
 			return e;
 		}
 	}
@@ -438,7 +444,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 		number: lpn.PhoneNumber
 	): string | undefined {
 		// Will use this to match area code from the first numbers
-		const rawNumber = number['values_']['2'].toString();
+		const rawNumber = ''; //number['values_']['2'].toString();
 		// List of all countries with countryCode (can be more than one. e.x. US, CA, DO, PR all have +1 countryCode)
 		const countries = this.allCountries.filter(
 			(c) => c.dialCode === countryCode.toString()
@@ -456,7 +462,7 @@ export class IntlTelInputComponent implements OnInit, OnChanges {
 			If no matches found, fallback to the main country.
 		*/
 		secondaryCountries.forEach((country) => {
-			country.areaCodes.forEach((areaCode) => {
+			country.areaCodes?.forEach((areaCode) => {
 				if (rawNumber.startsWith(areaCode)) {
 					matchedCountry = country.iso2;
 				}
