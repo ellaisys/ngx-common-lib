@@ -13,7 +13,7 @@
 [![APM](https://img.shields.io/packagist/l/ellaisys/ngx-common-lib?style=flat-square&logo=github&logoColor=whitesmoke&label=License)](LICENSE.md)
 
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version **16.2.0**
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version **17.0.0**
 
 ## Requirements
 - Node 18.17.1
